@@ -1,16 +1,17 @@
 {% extends "@EasyAdmin/page/content.html.twig" %}
 
+{% block content_title %}Visão geral{% endblock %}
+
 {% block main %}
     {% for message in app.flashes('notice') %}
         <div class="flash-notice">
             {{ message }}
         </div>
     {% endfor %}
-    <section class="section">
+    <section class="section mail4u-dashboard">
         <div class="container">
-                        <div class="g4-intro">
-                <span class="g4-label">ENVIA4U · ADMINISTRAÇÃO</span>
-                <h1 class="title">Visão geral</h1>
+            <div class="g4-intro">
+                <span class="g4-label">MAIL4U · ADMINISTRAÇÃO</span>
                 <p>Acompanhe as caixas e o recebimento de mensagens.</p>
             </div>
             <div class="g4-stats">
