@@ -73,6 +73,8 @@ class TemporaryEmailBoxCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
+            ->setEntityLabelInSingular('Caixa de e-mail')
+            ->setEntityLabelInPlural('Caixas de e-mail')
             ->setDefaultSort(['createdAt' => 'DESC']);
     }
 }
