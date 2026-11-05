@@ -5,8 +5,8 @@
 <section class="section g4-main mail4u-home">
     <div class="container">
         <div class="g4-intro">
-            <h1 class="title">Caixas de clientes</h1>
-            <p>Crie um endereço exclusivo para receber as mensagens do seu cliente.</p>
+            <h1 class="title">Crie uma caixa para seu cliente</h1>
+            <p>Informe o nome do cliente para gerar um endereço de e-mail exclusivo.</p>
         </div>
         <div class="g4-grid">
         <div class="g4-workspace">
@@ -26,7 +26,7 @@
             </div>
         {% endfor %}
         <form method="post" class="box g4-card">
-            <h2 class="title is-5">Nova caixa de e-mail</h2>
+
             <input type="hidden" name="_token" value="{{ csrf_token('create-client-inbox') }}">
             <div class="columns">
                 <div class="column">
@@ -43,11 +43,11 @@
         </div>
         <aside class="g4-guide">
             <h2 class="title is-5">Depois de criar a caixa</h2>
-            <ol>
+            <ul>
 
                 <li><strong>Guarde os dados de acesso</strong><br>Salve o e-mail, o link e a senha da caixa.</li>
                 <li><strong>Acompanhe as mensagens</strong><br>A caixa recebe mensagens por um ano. Cada mensagem fica disponível por um ano após o recebimento.</li>
-            </ol>
+            </ul>
         </aside>
         </div>
     </div>

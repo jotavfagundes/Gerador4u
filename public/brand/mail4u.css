@@ -84,3 +84,45 @@ body { background: var(--g4-bg); color: var(--g4-text); min-height: 100vh; }
         border-top: 1px solid var(--g4-line);
     }
 }
+
+.mail4u-home.g4-main {
+    max-width: 1000px;
+    padding-block: clamp(2.5rem, 7vw, 5rem);
+}
+
+.mail4u-home .g4-intro {
+    padding-bottom: 1.4rem;
+    border-bottom: 1px solid var(--g4-line);
+}
+
+.mail4u-home .g4-intro h1 {
+    font-size: clamp(2rem, 4vw, 3rem);
+}
+
+.mail4u-home .g4-card {
+    border-top: 3px solid var(--g4-wine);
+    box-shadow: 0 10px 32px #4600220b;
+}
+
+.mail4u-home .g4-guide {
+    padding: 1.5rem;
+    border: 0;
+    border-radius: .75rem;
+    background: #f1ebee;
+}
+
+.mail4u-home .g4-guide ul {
+    margin: 0;
+    list-style: none;
+}
+
+.mail4u-home .g4-guide li + li {
+    padding-top: .85rem;
+    border-top: 1px solid var(--g4-line);
+}
+
+@media (max-width: 720px) {
+    .mail4u-home .button.is-primary {
+        width: 100%;
+    }
+}
