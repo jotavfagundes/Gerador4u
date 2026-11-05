@@ -48,7 +48,7 @@ const Generator = ({
   const regenerateButton = (
     <button className="button is-light" onClick={() => handleRegenerateButtonPress()}>
       <span className="icon"><i className="fas fa-sync-alt"></i></span>
-      <span>Regenerate Email</span>
+      <span>Gerar novo e-mail</span>
     </button>
   );
 
@@ -59,7 +59,7 @@ const Generator = ({
           <div className="columns is-centered">
             <div className="column is-8">
               <h1 className="title is-5 has-text-centered has-text-white mb-4">
-                Your Temporary Email Address
+                Seu endereço de e-mail temporário
               </h1>
 
               <div className="columns is-mobile is-multiline">
@@ -68,7 +68,7 @@ const Generator = ({
                     <input
                       className="input is-medium has-text-weight-semibold is-size-6-mobile"
                       type="text"
-                      value={temporaryEmailBox === null ? 'Loading ...' : temporaryEmailBox.email}
+                      value={temporaryEmailBox === null ? 'Carregando…' : temporaryEmailBox.email}
                       readOnly
                     />
                   </label>
@@ -79,7 +79,7 @@ const Generator = ({
                     <span className="icon">
                       <i className={copied ? "fas fa-check" : "fas fa-copy"}></i>
                     </span>
-                    <span>{copied ? 'Copied!' : 'Copy'}</span>
+                    <span>{copied ? 'Copiado!' : 'Copiar'}</span>
                   </button>
                 </div>
               </div>
@@ -99,8 +99,8 @@ const Generator = ({
               <div className="field is-grouped is-grouped-centered">
                 <div className="control">
                   <div className="select">
-                    <select value={selectedDomain ?? ''} onChange={handleDomainChange} aria-label="Choose domain">
-                      <option value="">Random domain</option>
+                    <select value={selectedDomain ?? ''} onChange={handleDomainChange} aria-label="Escolher domínio">
+                      <option value="">Domínio aleatório</option>
                       {domains.map((domain) => (
                         <option key={domain.domain} value={domain.domain}>
                           @{domain.domain}{domain.premium ? ' (premium)' : ''}
@@ -123,8 +123,7 @@ const Generator = ({
           <div className="columns is-centered">
             <div className="column is-8">
               <p className="has-text-centered has-text-white is-size-6">
-                No more spam, marketing emails, or hacker attacks. Keep your real mailbox safe and
-                tidy with Temp Fast Mail, a free, temporary, anonymous, and secure email address.
+                Use um endereço temporário e gratuito do Mail4u para preservar seu e-mail principal e reduzir o spam.
               </p>
             </div>
           </div>

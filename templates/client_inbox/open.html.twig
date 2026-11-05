@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+{% block title %}Acessar caixa de e-mail - Mail4u{% endblock %}
+
+{% block body %}
+<section class="section g4-main">
+    <div class="container">
+        <h1 class="title">Caixa de entrada</h1>
+        {% if not unlocked %}
+            <form method="post" class="box" style="max-width: 30rem">
+                <input type="hidden" name="_token" value="{{ csrf_token('client-inbox-' ~ box.uuid) }}">
+                {% if error is defined %}
+                    <p class="notification is-danger">{{ error }}</p>
+                {% endif %}
+                <div class="field">
+                    <label class="label" for="password">Senha da caixa</label>
+                    <input class="input" type="password" id="password" name="password" maxlength="72" autocomplete="current-password" required>
+                </div>
+                <button class="button is-primary">Abrir caixa</button>
+            </form>
+        {% else %}
+            <p class="subtitle">{{ box.email }}</p>
+            {% for notice in app.flashes('success') %}
+                <p class="notification is-success is-light">{{ notice }}</p>
+            {% endfor %}
+            {% for notice in app.flashes('error') %}
+                <p class="notification is-danger is-light">{{ notice }}</p>
+            {% endfor %}
+            <details class="box g4-card">
+                <summary>Alterar senha da caixa</summary>
+                <form method="post" class="mt-4">
+                    <input type="hidden" name="_token" value="{{ csrf_token('client-inbox-' ~ box.uuid) }}">
+                    <input type="hidden" name="action" value="change-password">
+                    <div class="columns">
+                        <div class="column">
+                            <label class="label" for="current-password">Senha atual</label>
+                            <input class="input" type="password" id="current-password" name="password" maxlength="72" autocomplete="current-password" required>
+                        </div>
+                        <div class="column">
+                            <label class="label" for="new-password">Nova senha</label>
+                            <input class="input" type="password" id="new-password" name="new_password" minlength="10" maxlength="64" autocomplete="new-password" required>
+                        </div>
+                    </div>
+                    <button class="button is-primary">Salvar nova senha</button>
+                </form>
+            </details>
+            <p class="mb-4">
+                {% if box.expiresAt > date() %}
+                    Recebe mensagens até {{ box.expiresAt|date('d/m/Y') }}.
+                {% else %}
+                    Prazo de recebimento encerrado. As mensagens guardadas continuam disponíveis para consulta.
+                {% endif %}
+                <a href="{{ path('app_client_inbox', {uuid: box.uuid}) }}">Atualizar mensagens</a>
+            </p>
+            {% for email in emails %}
+                <details class="box">
+                    <summary>{{ email.subject ?? '(Sem assunto)' }} · {{ email.fromAddress ?? email.realFrom }} · {{ email.createdAt|date('d/m/Y H:i') }}</summary>
+                    <iframe class="mt-3" title="Conteúdo do e-mail" sandbox="allow-popups allow-popups-to-escape-sandbox" style="width: 100%; min-height: 18rem"
+                            srcdoc="{{ ('<meta http-equiv="Content-Security-Policy" content="default-src &apos;none&apos;; style-src &apos;unsafe-inline&apos;"><meta name="referrer" content="no-referrer"><base target="_blank">' ~ (email.html ?? ''))|e('html_attr') }}"></iframe>
+                </details>
+            {% else %}
+                <p>Ainda não há mensagens nesta caixa.</p>
+            {% endfor %}
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

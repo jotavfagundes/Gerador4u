@@ -26,14 +26,14 @@ class DomainCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id')->setDisabled(),
-            TextField::new('domain'),
-            TextField::new('emailCount')
+            TextField::new('domain', 'Domínio'),
+            TextField::new('emailCount', 'Total de e-mails')
                 ->onlyOnIndex()
                 ->formatValue(function ($value, Domain $entity) {
                     return $this->receivedEmailRepository->countByDomain($entity->getDomain());
                 }),
-            DateTimeField::new('activeUntil'),
-            BooleanField::new('premium'),
+            DateTimeField::new('activeUntil', 'Ativo até'),
+            BooleanField::new('premium', 'Premium'),
         ];
     }
 }

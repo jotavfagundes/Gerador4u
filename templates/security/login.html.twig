@@ -1,11 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log In - Temp Fast Mail{% endblock %}
+{% block title %}Entrar - Mail4u{% endblock %}
 
 {% block body %}
     <div class="section">
         <div class="container" style="max-width: 420px;">
             <form method="post" class="box">
+                <div class="has-text-centered mb-4">
+                    <img src="/brand/mail4u-logo.svg" alt="Mail4u" width="158" height="40">
+                </div>
 
                 {% if error %}
                     <div class="notification is-danger">
@@ -15,12 +18,12 @@
 
                 {% if app.user %}
                     <div class="notification is-info is-light">
-                        You are logged in as <strong>{{ app.user.userIdentifier }}</strong>,
-                        <a href="{{ logout_path() }}">Logout</a>
+                        Você está conectado como <strong>{{ app.user.userIdentifier }}</strong>,
+                        <a href="{{ logout_path() }}">Sair</a>
                     </div>
                 {% endif %}
 
-                <h1 class="title is-4 has-text-centered">Please sign in</h1>
+                <h1 class="title is-4 has-text-centered">Entre na sua conta</h1>
 
                 <div class="field">
                     <label class="label" for="username">Email</label>
@@ -39,7 +42,7 @@
                 </div>
 
                 <div class="field">
-                    <label class="label" for="password">Password</label>
+                    <label class="label" for="password">Senha</label>
                     <div class="control">
                         <input
                             class="input"
@@ -61,13 +64,13 @@
                 <div class="field">
                     <label class="checkbox">
                         <input type="checkbox" name="_remember_me" id="_remember_me">
-                        Remember me
+                        Lembrar de mim
                     </label>
                 </div>
 
                 <div class="field">
                     <button class="button is-primary is-fullwidth is-medium" type="submit">
-                        Sign in
+                        Entrar
                     </button>
                 </div>
 

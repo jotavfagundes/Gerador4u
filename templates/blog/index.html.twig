@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Blogs - Temp Fast Mail{% endblock %}
+{% block title %}Blog - Mail4u{% endblock %}
 
 {% block body %}
     <section id="blog" class="section">
@@ -33,15 +33,15 @@
         </div>
 
         {% if pages > 1 %}
-            <nav class="pagination is-centered mt-6" role="navigation" aria-label="pagination">
+            <nav class="pagination is-centered mt-6" role="navigation" aria-label="Paginação">
                 <ul class="pagination-list" style="display: flex; gap: 0.25rem; align-items: center;">
 
                     {# Previous button #}
                     <li>
                         {% if page <= 1 %}
-                            <span class="pagination-previous is-disabled">Back</span>
+                            <span class="pagination-previous is-disabled">Anterior</span>
                         {% else %}
-                            <a class="pagination-previous" href="{{ path('app_blog', {page: page - 1}) }}">Back</a>
+                            <a class="pagination-previous" href="{{ path('app_blog', {page: page - 1}) }}">Anterior</a>
                         {% endif %}
                     </li>
 
@@ -59,9 +59,9 @@
                     {# Next button #}
                     <li>
                         {% if page >= pages %}
-                            <span class="pagination-next is-disabled">Next</span>
+                            <span class="pagination-next is-disabled">Próxima</span>
                         {% else %}
-                            <a class="pagination-next" href="{{ path('app_blog', {page: page + 1}) }}">Next</a>
+                            <a class="pagination-next" href="{{ path('app_blog', {page: page + 1}) }}">Próxima</a>
                         {% endif %}
                     </li>
                 </ul>

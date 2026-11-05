@@ -6,6 +6,7 @@ use App\Repository\DomainRepository;
 use App\Repository\ReceivedEmailRepository;
 use App\Repository\TemporaryEmailBoxRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -47,19 +48,24 @@ class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setFaviconPath('favicon.png')
+            ->disableDarkMode()
+            ->setFaviconPath('brand/mail4u-favicon.ico')
             ->generateRelativeUrls()
-            ->setTitle('Temporary Fast Mail Admin Dashboard');
+            ->setTitle('Administração do Mail4u');
+    }
+
+    public function configureAssets(): Assets
+    {
+        return Assets::new()->addCssFile('/brand/mail4u.css');
     }
 
     public function configureMenuItems(): iterable
     {
-        yield MenuItem::linkToDashboard('Dashboard', 'fas fa-home');
-        yield MenuItem::linkTo(DomainCrudController::class, 'Domains', 'fas fa-globe');
-        yield MenuItem::linkTo(BlogCrudController::class, 'Blog Posts', 'fas fa-pen');
-        yield MenuItem::section('Users data');
-        yield MenuItem::linkTo(UserCrudController::class, 'Users', 'fas fa-user');
-        yield MenuItem::linkTo(TemporaryEmailBoxCrudController::class, 'Temporary Email Boxes', 'fas fa-paper-plane');
-        yield MenuItem::linkTo(ReceivedEmailCrudController::class, 'Received Emails', 'fas fa-envelope');
+        yield MenuItem::linkToDashboard('Painel', 'fas fa-home');
+        yield MenuItem::linkTo(DomainCrudController::class, 'Domínios', 'fas fa-globe');
+        yield MenuItem::section('Dados de usuários');
+        yield MenuItem::linkTo(UserCrudController::class, 'Usuários', 'fas fa-user');
+        yield MenuItem::linkTo(TemporaryEmailBoxCrudController::class, 'Caixas de e-mail', 'fas fa-paper-plane');
+        yield MenuItem::linkTo(ReceivedEmailCrudController::class, 'E-mails recebidos', 'fas fa-envelope');
     }
 }

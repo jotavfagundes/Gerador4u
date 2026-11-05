@@ -18,7 +18,7 @@ class ReceivedEmailRealtimeNotifier
     {
         $temporaryEmailBox = $receivedEmail->getTemporaryEmailBox();
 
-        if ($temporaryEmailBox === null) {
+        if ($temporaryEmailBox === null || $temporaryEmailBox->isClientInbox()) {
             return;
         }
 

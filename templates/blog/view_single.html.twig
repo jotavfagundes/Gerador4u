@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ blog.title }} - Temp Fast Mail{% endblock %}
+{% block title %}{{ blog.title }} - Mail4u{% endblock %}
 
 {% block body %}
     <section class="hero is-primary is-small">
         <div class="hero-body">
             <div class="container">
-                <nav class="breadcrumb has-succeeds-separator" aria-label="breadcrumbs">
+                <nav class="breadcrumb has-succeeds-separator" aria-label="Caminho de navegação">
                     <ul>
                         <li><a href="/blog">Blog</a></li>
                         <li class="is-active"><a aria-current="page">{{ blog.title }}</a></li>
@@ -47,7 +47,7 @@
 
             <div class="level mt-6">
                 <div class="level-left">
-                    <a class="button is-light" href="/blog">← Back to blog</a>
+                    <a class="button is-light" href="/blog">← Voltar ao blog</a>
                 </div>
                 <div class="level-right">
                     {# optional tags/share area #}
@@ -60,7 +60,7 @@
     {% if suggested_blogs is defined and suggested_blogs|length > 0 %}
         <section class="section">
             <div class="container">
-                <h2 class="title is-4 has-text-centered mb-5">Similar blog</h2>
+                <h2 class="title is-4 has-text-centered mb-5">Publicações relacionadas</h2>
                 <div class="columns is-multiline">
                     {% for s_blog in suggested_blogs|slice(0,3) %}
                         <div class="column is-12-mobile is-6-tablet is-4-desktop">

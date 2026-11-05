@@ -13,6 +13,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class TemporaryEmailBoxCrudController extends AbstractCrudController
 {
@@ -25,27 +27,36 @@ class TemporaryEmailBoxCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id')->setDisabled(),
-            TextField::new('email'),
-            TextField::new('uuid'),
-            TextField::new('creatorIp'),
-            TextField::new('countryCode'),
-            AssociationField::new('owner'),
-            AssociationField::new('receivedEmails')
+            TextField::new('email', 'E-mail'),
+            TextField::new('uuid', 'UUID'),
+            TextField::new('creatorIp', 'IP de criação'),
+            TextField::new('countryCode', 'Código do país'),
+            AssociationField::new('owner', 'Responsável'),
+            AssociationField::new('receivedEmails', 'E-mails recebidos')
                 ->hideOnForm(),
-            DateTimeField::new('createdAt')->setDisabled(),
-            DateTimeField::new('lastAccessedAt')->setDisabled(),
+            DateTimeField::new('createdAt', 'Criado em')->setDisabled(),
+            DateTimeField::new('lastAccessedAt', 'Último acesso em')->setDisabled(),
+            TextField::new('newAccessPassword', 'Nova senha da caixa')
+                ->onlyWhenUpdating()
+                ->setFormType(PasswordType::class)
+                ->setRequired(false)
+                ->setHelp('Para caixas de clientes. Deixe em branco para manter a senha atual.')
+                ->setFormTypeOption('constraints', [
+                    new Assert\Length(min: 10, max: 64, countUnit: Assert\Length::COUNT_BYTES),
+                    new Assert\Regex(pattern: '/\A(?!\s)[^\x00]+(?<!\s)\z/', message: 'Use uma senha sem espaços nas extremidades.'),
+                ]),
         ];
     }
 
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add(TextFilter::new('countryCode'));
+            ->add(TextFilter::new('countryCode', 'Código do país'));
     }
 
     public function configureActions(Actions $actions): Actions
     {
-        $impersonateAction = Action::new('impersonate', 'Impersonate', 'fas fa-user-secret')
+        $impersonateAction = Action::new('impersonate', 'Abrir caixa como usuário', 'fas fa-user-secret')
             ->linkToUrl(function (TemporaryEmailBox $emailBox): string {
                 return '/?' . http_build_query([
                     'impersonate_email' => $emailBox->getEmail(),

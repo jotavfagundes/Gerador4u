@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+{% block title %}Caixas de clientes - Mail4u{% endblock %}
+
+{% block body %}
+<section class="section g4-main">
+    <div class="container">
+                <div class="g4-intro">
+            <span class="g4-label">GERADOR DE E-MAILS</span>
+            <h1 class="title">Caixas de clientes</h1>
+            <p>Crie um endereço exclusivo para receber as mensagens do seu cliente.</p>
+        </div>
+        <div class="g4-grid">
+        <div class="g4-workspace">
+        {% for message in app.flashes('error') %}
+            <p class="notification is-danger">{{ message }}</p>
+        {% endfor %}
+        {% if error is defined %}
+            <p class="notification is-danger">{{ error }}</p>
+        {% endif %}
+        {% for credentials in app.flashes('client_inbox_credentials') %}
+            {% set link = path('app_client_inbox', {uuid: credentials.uuid}) %}
+            <div class="notification is-success is-light">
+                <p><strong>E-mail:</strong> {{ credentials.email }}</p>
+                <p><strong>Senha da caixa:</strong> <code>{{ credentials.password }}</code></p>
+                <p><strong>Link:</strong> <a data-client-inbox-link href="{{ link }}">{{ link }}</a></p>
+                <p>Guarde a senha agora. Ela só é exibida nesta tela após a criação.</p>
+            </div>
+        {% endfor %}
+        <form method="post" class="box g4-card">
+            <h2 class="title is-5">Nova caixa de e-mail</h2>
+            <input type="hidden" name="_token" value="{{ csrf_token('create-client-inbox') }}">
+            <div class="columns">
+                <div class="column">
+                    <label class="label" for="first_name">Nome</label>
+                    <input class="input" id="first_name" name="first_name" maxlength="80" required>
+                </div>
+                <div class="column">
+                    <label class="label" for="last_name">Sobrenome</label>
+                    <input class="input" id="last_name" name="last_name" maxlength="80" required>
+                </div>
+            </div>
+            <button class="button is-primary">Gerar caixa de e-mail</button>
+        </form>
+        </div>
+        <aside class="box g4-card g4-guide">
+            <h2 class="title is-5">Como funciona</h2>
+            <ol>
+                <li><strong>Gere o endereço</strong><br>Informe o nome e o sobrenome do cliente.</li>
+                <li><strong>Guarde os dados de acesso</strong><br>Salve o e-mail, o link e a senha da caixa.</li>
+                <li><strong>Acompanhe as mensagens</strong><br>A caixa recebe mensagens por um ano. Cada mensagem fica disponível por um ano após o recebimento.</li>
+            </ol>
+        </aside>
+        </div>
+    </div>
+</section>
+<script>
+    document.querySelectorAll('[data-client-inbox-link]').forEach((link) => {
+        link.textContent = link.href;
+    });
+</script>
+{% endblock %}

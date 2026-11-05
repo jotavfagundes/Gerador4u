@@ -33,7 +33,9 @@ if grep -q ^DATABASE_URL= .env; then
   else
     echo 'The database is now ready and reachable, running migrations ...'
     php bin/console doctrine:schema:update --force
-    php bin/console app:make-user admin@admin.dev admin ROLE_ADMIN
+    if [ "${APP_ENV:-prod}" = "dev" ]; then
+      php bin/console app:make-user admin@admin.dev admin ROLE_ADMIN
+    fi
     echo 'Migrations ran successfully!'
   fi
 fi

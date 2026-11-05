@@ -24,6 +24,6 @@ class DomainNotAvailableException extends AbstractCustomException
 
     public function getErrorMessage(): string
     {
-        return 'The requested domain is not available.';
+        return 'O domínio solicitado não está disponível.';
     }
 }

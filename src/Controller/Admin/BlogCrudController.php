@@ -23,16 +23,16 @@ class BlogCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id')->setDisabled(),
-            TextField::new('title'),
-            SlugField::new('slug')->setTargetFieldName('title'),
-            ImageField::new('photo')
+            TextField::new('title', 'Título'),
+            SlugField::new('slug', 'Slug')->setTargetFieldName('title'),
+            ImageField::new('photo', 'Imagem')
                 ->setBasePath('uploads/images/blogs/')
                 ->setUploadDir('public/uploads/images/blogs/')
                 ->setUploadedFileNamePattern('[randomhash].[extension]')
                 ->setRequired(false),
-            TextEditorField::new('shortDescription'),
-            TextEditorField::new('description'),
-            DateTimeField::new('createdAt'),
+            TextEditorField::new('shortDescription', 'Resumo'),
+            TextEditorField::new('description', 'Descrição'),
+            DateTimeField::new('createdAt', 'Criado em'),
         ];
     }
 

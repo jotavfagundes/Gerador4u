@@ -19,7 +19,8 @@ class TemporaryEmailBoxRepository extends ServiceEntityRepository
     public function findOlderThan(\DateTimeImmutable $olderThan): array
     {
         return $this->createQueryBuilder('t')
-            ->where('t.createdAt < :olderThan')
+            // Keep client addresses reserved after expiration to prevent delivery to a different client.
+            ->where('t.expiresAt IS NULL AND t.createdAt < :olderThan')
             ->setParameter('olderThan', $olderThan)
             ->getQuery()
             ->getResult();

@@ -26,20 +26,20 @@ class ReceivedEmailCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id')->setDisabled(),
-            TextField::new('realFrom'),
-            TextField::new('uuid'),
-            TextField::new('realTo'),
-            TextField::new('subject'),
-            TextField::new('fromName'),
-            TextField::new('fromAddress'),
-            TextField::new('hasAssignedTemporaryEmailBox'),
-            TextField::new('toMultipleString')->hideOnIndex(),
-            TextField::new('bccMultipleString')->hideOnIndex(),
-            DateTimeField::new('createdAt'),
-            DateTimeField::new('readAt'),
-            DateTimeField::new('subjectReadAt'),
-            TextField::new('html')->hideOnIndex(),
-            TextField::new('metadataString')->hideOnIndex(),
+            TextField::new('realFrom', 'Remetente original'),
+            TextField::new('uuid', 'UUID'),
+            TextField::new('realTo', 'Destinatário original'),
+            TextField::new('subject', 'Assunto'),
+            TextField::new('fromName', 'Nome do remetente'),
+            TextField::new('fromAddress', 'Endereço do remetente'),
+            TextField::new('hasAssignedTemporaryEmailBox', 'Tem caixa temporária vinculada'),
+            TextField::new('toMultipleString', 'Destinatários')->hideOnIndex(),
+            TextField::new('bccMultipleString', 'Destinatários em cópia oculta')->hideOnIndex(),
+            DateTimeField::new('createdAt', 'Criado em'),
+            DateTimeField::new('readAt', 'Lido em'),
+            DateTimeField::new('subjectReadAt', 'Assunto lido em'),
+            TextField::new('html', 'HTML')->hideOnIndex(),
+            TextField::new('metadataString', 'Metadados')->hideOnIndex(),
         ];
     }
 
@@ -52,12 +52,12 @@ class ReceivedEmailCrudController extends AbstractCrudController
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add(TextFilter::new('realTo'));
+            ->add(TextFilter::new('realTo', 'Destinatário original'));
     }
 
     public function configureActions(Actions $actions): Actions
     {
-        $viewHtml = Action::new('viewHtml', 'View HTML', 'fas fa-file-alt')
+        $viewHtml = Action::new('viewHtml', 'Ver HTML', 'fas fa-file-alt')
             ->linkToUrl(function ($entity) {
                 return $this->generateUrl('admin_received_email_view_html', [
                     'id' => $entity->getId(),

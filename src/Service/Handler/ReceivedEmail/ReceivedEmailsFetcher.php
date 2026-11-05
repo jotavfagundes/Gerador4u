@@ -33,7 +33,7 @@ class ReceivedEmailsFetcher
     {
         $emailBox = $this->temporaryEmailBoxRepository->findOneBy(['uuid' => $temporaryEmailBoxUuid]);
 
-        if ($emailBox === null) {
+        if ($emailBox === null || $emailBox->isClientInbox()) {
             throw new NotFoundHttpException();
         }
 

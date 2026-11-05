@@ -34,7 +34,9 @@ class ReceivedEmailFactory
 
         $temporaryEmailBox = $this->temporaryEmailBoxRepository->findOneBy(['email' => $dto->real_to]);
 
-        if ($temporaryEmailBox instanceof TemporaryEmailBox) {
+        if ($temporaryEmailBox instanceof TemporaryEmailBox
+            && ($temporaryEmailBox->getExpiresAt() === null || $temporaryEmailBox->getExpiresAt() > new \DateTimeImmutable())
+        ) {
             $email->setTemporaryEmailBox($temporaryEmailBox);
         }
 

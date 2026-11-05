@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Temp Fast Mail - Disposable Temporary Email{% endblock %}
+{% block title %}Mail4u - E-mail temporário{% endblock %}
 
 {% block body %}
     <div {{ react_component('Application', { isPremium: isPremium, domains: domains }) }}>
         <div class="is-flex is-justify-content-center is-align-items-center is-fullheight">
             <div class="has-text-centered">
-                <p>Loading...</p>
+                <p>Carregando…</p>
                 <i class="fas fa-cog fa-spin fa-3x"></i>
             </div>
         </div>

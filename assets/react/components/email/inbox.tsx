@@ -92,15 +92,15 @@ const Inbox = ({temporaryEmailBox}: Props) => {
               {/* Header */}
               <div className="columns is-mobile m-0 has-background-dark py-3 px-4">
                 <div className="column">
-                  <p className="has-text-white has-text-weight-semibold">SENDER</p>
+                  <p className="has-text-white has-text-weight-semibold">REMETENTE</p>
                 </div>
 
                 <div className="column is-hidden-mobile">
-                  <p className="has-text-white has-text-weight-semibold">SUBJECT</p>
+                  <p className="has-text-white has-text-weight-semibold">ASSUNTO</p>
                 </div>
 
                 <div className="column is-narrow has-text-right">
-                  <p className="has-text-white has-text-weight-semibold">VIEW</p>
+                  <p className="has-text-white has-text-weight-semibold">ABRIR</p>
                 </div>
               </div>
 
@@ -109,9 +109,9 @@ const Inbox = ({temporaryEmailBox}: Props) => {
                 <span className="icon is-large">
                   <i className="fas fa-sync-alt fa-spin fa-3x has-text-grey-light"></i>
                 </span>
-                  <p className="title is-5 has-text-grey-dark mt-4">Your inbox is empty</p>
+                  <p className="title is-5 has-text-grey-dark mt-4">Sua caixa de entrada está vazia</p>
                   <p className="subtitle is-6 has-text-grey">
-                    Waiting for incoming emails. Will refresh automatically when new emails arrive.
+                    Aguardando mensagens. A caixa de entrada será atualizada automaticamente.
                   </p>
                 </div>
               )}
@@ -168,7 +168,7 @@ const Inbox = ({temporaryEmailBox}: Props) => {
                           onClick={() => setSelectedEmail(null)}
                         >
                           <span className="icon">←</span>
-                          <span className="is-hidden-mobile">Back</span>
+                          <span className="is-hidden-mobile">Voltar</span>
                         </button>
 
                         {/* Full Screen Button */}
@@ -177,7 +177,7 @@ const Inbox = ({temporaryEmailBox}: Props) => {
                           onClick={() => handleViewFullScreen(selectedEmail)}
                         >
                           <span className="icon">⛶</span>
-                          <span className="">View Full Screen</span>
+                          <span className="">Ver em tela cheia</span>
                         </button>
                       </div>
 
@@ -203,7 +203,7 @@ const Inbox = ({temporaryEmailBox}: Props) => {
                       {/* Right Side: Date */}
                       {selectedEmail.received_at && (
                         <p className="has-text-grey is-size-7">
-                          {new Date(selectedEmail.received_at).toLocaleString()}
+                          {new Date(selectedEmail.received_at).toLocaleString('pt-BR')}
                         </p>
                       )}
                     </div>
@@ -211,9 +211,9 @@ const Inbox = ({temporaryEmailBox}: Props) => {
                     {/* Sender */}
                     <p className="has-text-weight-semibold mb-2">
                       {selectedEmail.from_name ? (
-                        <>From: {selectedEmail.from_name} {" <"}{selectedEmail.from}{">"}</>
+                        <>De: {selectedEmail.from_name} {" <"}{selectedEmail.from}{">"}</>
                       ) : (
-                        <>From: {selectedEmail.from}</>
+                        <>De: {selectedEmail.from}</>
                       )}
                     </p>
 

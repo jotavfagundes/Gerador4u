@@ -12,7 +12,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:delete-old-emails',
-    description: 'Deletes emails and email boxes older than 24 hours (or another specified time period via .env).',
+    description: 'Deletes messages older than one year and cleans up legacy temporary inboxes.',
 )]
 class DeleteOldEmailsCommand extends Command
 {
@@ -32,7 +32,7 @@ class DeleteOldEmailsCommand extends Command
 
         $deleteOlderThan = new \DateTimeImmutable('-' . $olderThanHours . ' hours');
 
-        $deletedEmailCount = $this->deleteOldReceivedEmailsHandler->deleteOlderThan($deleteOlderThan);
+        $deletedEmailCount = $this->deleteOldReceivedEmailsHandler->deleteOlderThan(new \DateTimeImmutable('-1 year'));
 
         $io->success('Deleted ' . $deletedEmailCount . ' old emails.');
 
@@ -41,7 +41,7 @@ class DeleteOldEmailsCommand extends Command
         $io->success('Deleted ' . $deletedInboxCount . ' old inboxes.');
 
         $io->success(sprintf(
-            'You have successfully deleted emails and email boxes that were older than %s hours. Older than %s date',
+            'Legacy temporary inbox cleanup threshold: %s hours (%s).',
             $olderThanHours, $deleteOlderThan->format('Y-m-d H:i:s')
         ));
 

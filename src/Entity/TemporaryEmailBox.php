@@ -43,6 +43,55 @@ class TemporaryEmailBox
     #[ORM\Column(length: 2, nullable: true)]
     private ?string $countryCode = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $accessPasswordHash = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $expiresAt = null;
+
+    public function protectForClient(string $passwordHash): void
+    {
+        $this->accessPasswordHash = $passwordHash;
+        $this->expiresAt = $this->createdAt->modify('+1 year');
+    }
+
+    public function changeAccessPassword(string $passwordHash): void
+    {
+        $this->accessPasswordHash = $passwordHash;
+    }
+
+    public function getNewAccessPassword(): ?string
+    {
+        return null;
+    }
+
+    public function setNewAccessPassword(?string $password): void
+    {
+        if ($this->isClientInbox() && $password !== null && $password !== '') {
+            $this->changeAccessPassword(password_hash($password, PASSWORD_DEFAULT));
+        }
+    }
+
+    public function getAccessVersion(): string
+    {
+        return hash('sha256', $this->accessPasswordHash ?? '');
+    }
+
+    public function getExpiresAt(): ?\DateTimeImmutable
+    {
+        return $this->expiresAt;
+    }
+
+    public function isClientInbox(): bool
+    {
+        return $this->accessPasswordHash !== null;
+    }
+
+    public function verifiesAccessPassword(string $password): bool
+    {
+        return $this->accessPasswordHash !== null && password_verify($password, $this->accessPasswordHash);
+    }
+
     public function __construct()
     {
         $this->uuid = Uuid::v4();

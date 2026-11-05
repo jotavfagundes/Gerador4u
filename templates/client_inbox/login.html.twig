@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+{% block title %}Login da caixa - Mail4u{% endblock %}
+
+{% block body %}
+<section class="section g4-main">
+    <div class="container">
+        <h1 class="title">Acessar caixa de e-mail</h1>
+        <form method="post" class="box g4-card" style="max-width: 30rem">
+            <input type="hidden" name="_token" value="{{ csrf_token('client-inbox-login') }}">
+            {% if error %}
+                <p class="notification is-danger" role="alert">{{ error }}</p>
+            {% endif %}
+            <div class="field">
+                <label class="label" for="inbox-email">E-mail da caixa</label>
+                <input class="input" type="email" id="inbox-email" name="email" value="{{ email }}" maxlength="255" autocomplete="username" required>
+            </div>
+            <div class="field">
+                <label class="label" for="inbox-password">Senha da caixa</label>
+                <input class="input" type="password" id="inbox-password" name="password" maxlength="72" autocomplete="current-password" required>
+            </div>
+            <button class="button is-primary">Entrar na caixa</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

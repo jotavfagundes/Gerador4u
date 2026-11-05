@@ -20,6 +20,6 @@ class ThereAreNoDomainsException extends AbstractCustomException
 
     public function getErrorMessage(): string
     {
-        return 'There are no assigned domains';
+        return 'Nenhum domínio cadastrado';
     }
 }

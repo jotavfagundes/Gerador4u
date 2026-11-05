@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="pt-BR" data-theme="light">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{% block title %}Temp Fast Mail{% endblock %}</title>
-        <link rel="icon" href="/favicon.png" type="image/x-icon" />
+        <title>{% block title %}Mail4u{% endblock %}</title>
+        <link rel="icon" href="/brand/mail4u-favicon.ico" type="image/x-icon" />
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
@@ -29,6 +29,7 @@
                 })
             </script>
         {% endif %}
+        <link rel="stylesheet" href="/brand/mail4u.css">
     </head>
     <body>
     {% include 'navbar.html.twig' %}

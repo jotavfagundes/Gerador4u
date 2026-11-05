@@ -21,15 +21,15 @@ class UserCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id')->setDisabled(),
-            TextField::new('email'),
-            TextField::new('newPassword')->hideOnIndex(),
-            TextField::new('password')->setDisabled()->hideOnIndex(),
-            ChoiceField::new('roles')
+            TextField::new('email', 'E-mail'),
+            TextField::new('newPassword', 'Nova senha')->hideOnIndex(),
+            TextField::new('password', 'Senha')->setDisabled()->hideOnIndex(),
+            ChoiceField::new('roles', 'Perfis de acesso')
                 ->setChoices(array_combine(User::ROLES, User::ROLES))
                 ->allowMultipleChoices()
                 ->renderExpanded()
                 ->renderAsBadges(),
-            AssociationField::new('temporaryEmailBoxes'),
+            AssociationField::new('temporaryEmailBoxes', 'Caixas temporárias'),
         ];
     }
 }

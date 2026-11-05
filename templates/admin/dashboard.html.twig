@@ -8,11 +8,25 @@
     {% endfor %}
     <section class="section">
         <div class="container">
-            <h1 class="title">Dashboard Statistics</h1>
+                        <div class="g4-intro">
+                <span class="g4-label">ENVIA4U · ADMINISTRAÇÃO</span>
+                <h1 class="title">Visão geral</h1>
+                <p>Acompanhe as caixas e o recebimento de mensagens.</p>
+            </div>
+            <div class="g4-stats">
+                {% for label, value in {
+                    'Domínios ativos': activeDomainsCount,
+                    'Caixas cadastradas': temporaryEmailBoxCount,
+                    'Mensagens recebidas': receivedEmailsWithEmailBoxCount + receivedEmailsWithoutEmailBoxCount,
+                    'Mensagens não lidas': unreadEmails
+                } %}
+                    <div class="g4-card g4-stat"><span>{{ label }}</span><strong>{{ value }}</strong></div>
+                {% endfor %}
+            </div>
 
             {% if activeDomainsCount == 0 %}
                 <div class="alert alert-danger" role="alert">
-                    ⚠️ No active domains found! Please add a domain in "Domains" section on the left menu.
+                    ⚠️ Nenhum domínio ativo. Cadastre um na seção Domínios do menu lateral.
                 </div>
             {% endif %}
 
@@ -20,45 +34,45 @@
             <table class="table is-striped is-hoverable is-fullwidth">
                 <thead>
                 <tr>
-                    <th>Metric</th>
-                    <th>Count</th>
+                    <th>Métrica</th>
+                    <th>Total</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
-                    <td>Active domains</td>
+                    <td>Domínios ativos</td>
                     <td>{{ activeDomainsCount }}</td>
                 </tr>
                 <tr>
-                    <td>Temporary Email Box Count</td>
+                    <td>Total de caixas temporárias</td>
                     <td>{{ temporaryEmailBoxCount }}</td>
                 </tr>
                 <tr>
-                    <td>Received Total Emails (with assigned email box)</td>
+                    <td>Total de e-mails recebidos com caixa vinculada</td>
                     <td>{{ receivedEmailsWithEmailBoxCount }}</td>
                 </tr>
                 <tr>
-                    <td>Received Total Emails (without assigned email box)</td>
+                    <td>Total de e-mails recebidos sem caixa vinculada</td>
                     <td>{{ receivedEmailsWithoutEmailBoxCount }}</td>
                 </tr>
                 <tr>
-                    <td>Read emails</td>
+                    <td>E-mails lidos</td>
                     <td>{{ readEmails }}</td>
                 </tr>
                 <tr>
-                    <td>Unread emails</td>
+                    <td>E-mails não lidos</td>
                     <td>{{ unreadEmails }}</td>
                 </tr>
                 <tr>
-                    <td>Emails with read subjects</td>
+                    <td>E-mails com assunto lido</td>
                     <td>{{ emailsWithReadSubjects }}</td>
                 </tr>
                 <tr>
-                    <td>Oldest received email at</td>
+                    <td>Primeiro e-mail recebido em</td>
                     <td>{{ oldestReceivedEmailAt ? oldestReceivedEmailAt.createdAt|date('Y-m-d H:i:s') : 'N/A' }}</td>
                 </tr>
                 <tr>
-                    <td>Newest received email at</td>
+                    <td>Último e-mail recebido em</td>
                     <td>{{ newestReceivedEmailAt ? newestReceivedEmailAt.createdAt|date('Y-m-d H:i:s') : 'N/A' }}</td>
                 </tr>
                 </tbody>
@@ -66,13 +80,13 @@
 
             <div class="row mt-4">
                 <div class="col-md-6">
-                    <h2 class="title">Top 5 countries by received emails</h2>
+                    <h2 class="title">5 países com mais e-mails recebidos</h2>
                     <table class="table is-striped is-hoverable is-fullwidth">
                         <thead>
                         <tr>
                             <th>#</th>
-                            <th>Country</th>
-                            <th>Received emails</th>
+                            <th>País</th>
+                            <th>E-mails recebidos</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -84,7 +98,7 @@
                             </tr>
                         {% else %}
                             <tr>
-                                <td colspan="3">N/A</td>
+                                <td colspan="3">Sem dados</td>
                             </tr>
                         {% endfor %}
                         </tbody>
@@ -92,13 +106,13 @@
                 </div>
 
                 <div class="col-md-6">
-                    <h2 class="title">Top 5 countries by created email boxes</h2>
+                    <h2 class="title">5 países com mais caixas criadas</h2>
                     <table class="table is-striped is-hoverable is-fullwidth">
                         <thead>
                         <tr>
                             <th>#</th>
-                            <th>Country</th>
-                            <th>Email boxes</th>
+                            <th>País</th>
+                            <th>Caixas de entrada</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -110,7 +124,7 @@
                             </tr>
                         {% else %}
                             <tr>
-                                <td colspan="3">N/A</td>
+                                <td colspan="3">Sem dados</td>
                             </tr>
                         {% endfor %}
                         </tbody>

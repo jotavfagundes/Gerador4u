@@ -69,7 +69,7 @@ final class EmailBoxController extends AbstractController
         ]);
 
         return $this->json(new ValidateEmailBoxResponseDto(
-            is_valid: $emailBox instanceof TemporaryEmailBox,
+            is_valid: $emailBox instanceof TemporaryEmailBox && !$emailBox->isClientInbox(),
         ));
     }
 
@@ -77,6 +77,9 @@ final class EmailBoxController extends AbstractController
     public function getEmailBoxByUuid(Uuid $emailBoxUuid): Response
     {
         $temporaryEmailBox = $this->temporaryEmailBoxFetcher->fetchByUuid($emailBoxUuid);
+        if ($temporaryEmailBox->isClientInbox()) {
+            throw $this->createNotFoundException();
+        }
         $this->temporaryEmailBoxUpdater->markAsLastAccessedNow($temporaryEmailBox);
 
         $receivedEmails = $this->receivedEmailsFetcher->fetchByTemporaryEmailBox($temporaryEmailBox);
