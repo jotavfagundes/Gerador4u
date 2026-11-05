@@ -44,3 +44,43 @@ body { background: var(--g4-bg); color: var(--g4-text); min-height: 100vh; }
 .sidebar-menu .menu-item.active > a { background: var(--g4-rose); color: var(--g4-dark); border-radius: .5rem; }
 .datagrid { background: #fff; border-radius: .75rem; }
 @media (max-width: 720px) { .g4-grid { grid-template-columns: 1fr; } }
+
+.mail4u-home .g4-intro {
+    margin-bottom: 2rem;
+}
+
+.mail4u-home .g4-intro h1 {
+    margin: 0 0 .65rem;
+    letter-spacing: -.035em;
+}
+
+.mail4u-home .g4-grid {
+    gap: clamp(1.5rem, 4vw, 3rem);
+}
+
+.mail4u-home .g4-card {
+    padding: clamp(1.25rem, 3vw, 2rem);
+    border-radius: .75rem;
+}
+
+.mail4u-home .input {
+    min-height: 2.75rem;
+    box-shadow: none;
+}
+
+.mail4u-home .button {
+    min-height: 2.75rem;
+}
+
+.mail4u-home .g4-guide {
+    padding: 1rem 0 1rem 1.25rem;
+    border-left: 1px solid var(--g4-line);
+}
+
+@media (max-width: 720px) {
+    .mail4u-home .g4-guide {
+        padding: 1rem 0 0;
+        border-left: 0;
+        border-top: 1px solid var(--g4-line);
+    }
+}
