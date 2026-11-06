@@ -7,6 +7,7 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -39,6 +40,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     private ?string $password = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $profilePhoto = null;
+
+    public function getProfilePhoto(): ?string
+    {
+        return $this->profilePhoto;
+    }
+
+    public function setProfilePhotoUpload(?UploadedFile $photo): void
+    {
+        if ($photo === null || !$photo->isValid() || $photo->getSize() > 512000) {
+            return;
+        }
+
+        $mimeType = $photo->getMimeType();
+        if (in_array($mimeType, ['image/jpeg', 'image/png', 'image/webp'], true)) {
+            $this->profilePhoto = 'data:' . $mimeType . ';base64,' . base64_encode($photo->getContent());
+        }
+    }
+
+    public function getProfilePhotoUpload(): ?UploadedFile
+    {
+        return null;
+    }
 
     /**
      * @var Collection<int, TemporaryEmailBox>
@@ -137,6 +163,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __serialize(): array
     {
         $data = (array) $this;
+        unset($data["\0".self::class."\0profilePhoto"]);
         $data["\0".self::class."\0password"] = hash('crc32c', $this->password);
 
         return $data;

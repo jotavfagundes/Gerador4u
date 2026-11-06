@@ -3,15 +3,18 @@
 namespace App\Controller\Admin;
 
 use App\Repository\DomainRepository;
+use App\Entity\User;
 use App\Repository\ReceivedEmailRepository;
 use App\Repository\TemporaryEmailBoxRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[AdminDashboard(routePath: '/admin', routeName: 'admin')]
 #[IsGranted('ROLE_ADMIN')]
@@ -69,5 +72,15 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkTo(UserCrudController::class, 'Usuários', 'fas fa-user');
         yield MenuItem::linkTo(TemporaryEmailBoxCrudController::class, 'Caixas de e-mail', 'fas fa-paper-plane');
         yield MenuItem::linkTo(ReceivedEmailCrudController::class, 'E-mails recebidos', 'fas fa-envelope');
+    }
+
+    public function configureUserMenu(UserInterface $user): UserMenu
+    {
+        $menu = parent::configureUserMenu($user);
+        if ($user instanceof User && $user->getProfilePhoto() !== null) {
+            $menu->setAvatarUrl($user->getProfilePhoto());
+        }
+
+        return $menu;
     }
 }
