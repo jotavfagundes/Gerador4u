@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Controller\Admin\Filter\MailboxExpiryFilter;
 use App\Entity\TemporaryEmailBox;
 use App\Repository\ReceivedEmailRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -14,12 +15,13 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class TemporaryEmailBoxCrudController extends AbstractCrudController
 {
-    public function __construct(private ReceivedEmailRepository $messages)
+    public function __construct(private ReceivedEmailRepository $messages, private AdminUrlGenerator $urls)
     {
     }
 
@@ -32,7 +34,7 @@ class TemporaryEmailBoxCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id')->setDisabled(),
-            TextField::new('email', 'E-mail'),
+            TextField::new('email', 'E-mail')->setTemplatePath('admin/field/mailbox_email.html.twig'),
             TextField::new('uuid', 'UUID'),
             TextField::new('creatorIp', 'IP de criação'),
             TextField::new('countryCode', 'Código do país'),
@@ -48,7 +50,7 @@ class TemporaryEmailBoxCrudController extends AbstractCrudController
                     return $message?->getCreatedAt()?->format('d/m/Y H:i') ?? 'Sem mensagens';
                 }),
             DateTimeField::new('lastAccessedAt', 'Último acesso em')->setDisabled(),
-            TextField::new('newAccessPassword', 'Nova senha da caixa')
+            TextField::new('newAccessPassword', 'Redefinir senha da caixa')
                 ->onlyWhenUpdating()
                 ->setFormType(PasswordType::class)
                 ->setRequired(false)
@@ -63,6 +65,7 @@ class TemporaryEmailBoxCrudController extends AbstractCrudController
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
+            ->add(MailboxExpiryFilter::new())
             ->add(TextFilter::new('countryCode', 'Código do país'));
     }
 
@@ -76,7 +79,17 @@ class TemporaryEmailBoxCrudController extends AbstractCrudController
                 ]);
             });
 
+        $resetPassword = Action::new('resetMailboxPassword', 'Redefinir senha', 'fas fa-key')
+            ->displayIf(static fn (TemporaryEmailBox $box): bool => $box->isClientInbox())
+            ->linkToUrl(fn (TemporaryEmailBox $box): string => (clone $this->urls)
+                ->unsetAll()
+                ->setController(self::class)
+                ->setAction(Action::EDIT)
+                ->setEntityId($box->getId())
+                ->generateUrl() . '#TemporaryEmailBox_newAccessPassword');
+
         return $actions
+            ->add(Crud::PAGE_INDEX, $resetPassword)
             ->add(Crud::PAGE_INDEX, $impersonateAction)
             ->add(Crud::PAGE_DETAIL, $impersonateAction);
     }

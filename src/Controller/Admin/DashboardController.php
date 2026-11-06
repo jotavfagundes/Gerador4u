@@ -61,7 +61,8 @@ class DashboardController extends AbstractDashboardController
     {
         return Assets::new()
             ->addCssFile('/brand/mail4u.css')
-            ->addCssFile('/brand/mail4u-admin.css');
+            ->addCssFile('/brand/mail4u-admin.css')
+            ->addJsFile('/brand/mail4u-inbox.js?v=2');
     }
 
     public function configureMenuItems(): iterable

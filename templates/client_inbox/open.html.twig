@@ -3,7 +3,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="/brand/mail4u-workspace.css">
+    <link rel="stylesheet" href="/brand/mail4u-workspace.css?v=2">
 {% endblock %}
 
 {% block body %}
@@ -64,17 +64,18 @@
                 {% endif %}
 
             </p>
-            </aside><div class="mailbox-list"><h2>Recebidas <span>{{ emails|length }}</span></h2>
-            {% if emails is not empty %}
+            </aside><div class="mailbox-list"><h2>Recebidas <span data-message-count>{{ emails|length }}</span></h2>
+                <p class="help" aria-live="polite"><span data-unread-count>{{ emails|filter(email => email.readAt is null)|length }}</span> não lidas</p>
                 <div class="field">
                     <label class="label" for="message-search">Buscar mensagens</label>
                     <input class="input" type="search" id="message-search" placeholder="Assunto ou remetente">
                 </div>
                 <p id="message-search-empty" hidden>Nenhuma mensagem encontrada.</p>
-            {% endif %}
+            <div data-message-rows>
+            {% block message_rows %}
             {% for email in emails %}
-                <details class="box mail4u-message" data-message
-                         {% if email.readAt is null %}data-unread data-message-id="{{ email.id }}" data-csrf="{{ csrf_token('client-inbox-' ~ box.uuid) }}"{% endif %}>
+                <details class="box mail4u-message" data-message data-message-id="{{ email.id }}"
+                         {% if email.readAt is null %}data-unread data-csrf="{{ csrf_token('client-inbox-' ~ box.uuid) }}"{% endif %}>
                     <summary>
                         <span data-message-search><strong>{{ email.fromName ?: (email.fromAddress ?? email.realFrom) }}</strong><span>{{ email.subject ?? '(Sem assunto)' }}</span><small>{{ email.fromAddress ?? email.realFrom }}</small></span>
                         <time>{{ email.createdAt|date('d/m H:i') }}</time>
@@ -93,9 +94,14 @@
                 </details>
             {% else %}
                 <p class="mailbox-list-empty">Nenhuma mensagem</p>
-            {% endfor %}</div><div class="mailbox-reader" data-reader><div class="mailbox-placeholder"><span aria-hidden="true">✉</span><h2>{{ emails is empty ? 'Sua caixa está vazia' : 'Selecione uma mensagem' }}</h2><p>{{ emails is empty ? 'Os e-mails recebidos neste endereço aparecerão aqui.' : 'Escolha um e-mail na lista para ler a mensagem.' }}</p></div></div></div>
+            {% endfor %}
+            {% endblock %}
+            </div></div><div class="mailbox-reader" data-reader>
+                <button type="button" class="button mailbox-back" data-mailbox-back>← Voltar à caixa de entrada</button>
+                <div class="mailbox-placeholder"><span aria-hidden="true">✉</span><h2>{{ emails is empty ? 'Sua caixa está vazia' : 'Selecione uma mensagem' }}</h2><p>{{ emails is empty ? 'Os e-mails recebidos neste endereço aparecerão aqui.' : 'Escolha um e-mail na lista para ler a mensagem.' }}</p></div>
+            </div></div>
         {% endif %}
     </div>
 </section>
-{% if unlocked %}<script src="/brand/mail4u-inbox.js" defer></script>{% endif %}
+{% if unlocked %}<script src="/brand/mail4u-inbox.js?v=2" defer></script>{% endif %}
 {% endblock %}

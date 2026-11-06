@@ -215,11 +215,15 @@ final class ClientInboxController extends AbstractController
             return $this->redirectToRoute('app_client_inbox', ['uuid' => $uuid], 303);
         }
 
-        $response = $this->render('client_inbox/open.html.twig', [
+        $template = 'client_inbox/open.html.twig';
+        $context = [
             'box' => $box,
             'unlocked' => $unlocked,
             'emails' => $unlocked ? $messages->fetchByTemporaryEmailBox($box) : [],
-        ]);
+        ];
+        $response = $request->query->getBoolean('messages_only')
+            ? ($unlocked ? $this->renderBlock($template, 'message_rows', $context) : new Response(status: 403))
+            : $this->render($template, $context);
         $response->headers->set('Cache-Control', 'private, no-store');
         $response->headers->set('Referrer-Policy', 'no-referrer');
 

@@ -95,6 +95,7 @@
     padding: .18rem .6rem;
 }
 .mailbox-reader { background: #fdfbfc; border-radius: 0 1rem 1rem 0; }
+.mailbox-back { display: none; }
 .mailbox-message-body { background: #fff; padding: clamp(1rem, 2vw, 2rem); }
 .mailbox-message-body iframe { border: 1px solid var(--g4-line); border-radius: .5rem; }
 @media (min-width: 850px) {
@@ -107,4 +108,17 @@
 @media (max-width: 849px) {
     .mailbox-sidebar, .mailbox-reader { border-radius: 0; }
     .mailbox-sidebar { border-bottom: 1px solid var(--g4-line); }
+    body.mailbox-reading { overflow: hidden; }
+    .mailbox-list + .mailbox-reader.has-message {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        display: block;
+        overflow: auto;
+        background: #fff;
+    }
+    .mailbox-reader.has-message .mailbox-back {
+        display: inline-flex;
+        margin: 1rem 1rem 0;
+    }
 }
