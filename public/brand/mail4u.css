@@ -167,3 +167,40 @@ body { background: var(--g4-bg); color: var(--g4-text); min-height: 100vh; }
 @media (max-width: 760px) {
     .mail4u-home-layout { grid-template-columns: minmax(0, 1fr); }
 }
+
+.mail4u-home {
+    background: #faf5f7;
+    padding: clamp(2rem, 5vw, 4.5rem) clamp(1rem, 5vw, 3rem);
+}
+.mail4u-home-layout {
+    width: min(100%, 73rem);
+    margin-inline: auto;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+.mail4u-home .g4-intro h1 {
+    color: var(--g4-wine);
+    font-size: clamp(2.2rem, 4.3vw, 4rem);
+}
+.mail4u-home .g4-intro p {
+    font-size: clamp(1rem, 1.4vw, 1.2rem);
+}
+.mail4u-home .mail4u-create-form {
+    padding: clamp(1.25rem, 3vw, 2.75rem);
+    border-radius: .75rem;
+    margin: 0;
+}
+.mail4u-create-fields, .mail4u-create-actions {
+    display: grid;
+    gap: .75rem;
+}
+.mail4u-create-fields .field { margin: 0; }
+.mail4u-create-actions { margin-top: 1.25rem; }
+.mail4u-create-actions > .button { width: 100%; }
+.mail4u-create-actions > a.button {
+    border-color: var(--g4-wine);
+    color: var(--g4-wine);
+    box-shadow: none;
+}
+@media (max-width: 760px) {
+    .mail4u-home-layout { grid-template-columns: minmax(0, 1fr); }
+}

@@ -2,10 +2,10 @@
 {% block title %}Caixas de clientes - Mail4u{% endblock %}
 
 {% block body %}
-<section class="section g4-main mail4u-home">
-    <div class="container mail4u-home-layout">
+<section class="mail4u-home">
+    <div class="mail4u-home-layout">
         <div class="g4-intro">
-            <h1 class="title">Crie uma caixa para seu cliente</h1>
+            <h1 class="title">Crie uma caixa<br>para seu cliente</h1>
             <p>Informe o nome do cliente para gerar um endereço de e-mail exclusivo.</p>
         </div>
 
@@ -34,33 +34,25 @@
                 </div>
             </div>
         {% endfor %}
-        <form method="post" class="box g4-card"><h2 class="title is-5">Nova caixa de e-mail</h2><p class="mb-5">Preencha os dados do cliente para criar a caixa.</p>
+        <form method="post" class="box g4-card mail4u-create-form"><h2 class="title is-5">Nova caixa de e-mail</h2><p class="mb-5">Preencha os dados do cliente para criar a caixa.</p>
 
             <input type="hidden" name="_token" value="{{ csrf_token('create-client-inbox') }}">
-            <div class="columns">
-                <div class="column">
+            <div class="mail4u-create-fields">
+                <div class="field">
                     <label class="label" for="first_name">Nome</label>
                     <input class="input" id="first_name" name="first_name" maxlength="80" required>
                 </div>
-                <div class="column">
+                <div class="field">
                     <label class="label" for="last_name">Sobrenome</label>
                     <input class="input" id="last_name" name="last_name" maxlength="80" required>
                 </div>
             </div>
-            <div class="buttons">
+            <div class="mail4u-create-actions">
                 <button class="button is-primary">Criar caixa de e-mail</button>
                 <a class="button" href="{{ path('app_client_inbox_login') }}">Acessar uma caixa</a>
             </div>
         </form>
         </div>
-        <aside class="g4-guide mail4u-home-guide">
-            <h2 class="title is-5">Depois de criar a caixa</h2>
-            <ul>
-
-                <li><strong>Guarde os dados de acesso</strong><br>Salve o e-mail, o link e a senha da caixa.</li>
-                <li><strong>Acompanhe as mensagens</strong><br>A caixa recebe mensagens por um ano. Cada mensagem fica disponível por um ano após o recebimento.</li>
-            </ul>
-        </aside>
     </div>
 </section>
 <script>
