@@ -122,3 +122,23 @@
         margin: 1rem 1rem 0;
     }
 }
+
+.mailbox-workspace .mailbox-header { box-shadow: 0 3px 12px #46002208; }
+.mailbox-list [data-message] { border-radius: .55rem; }
+.mailbox-list [data-message] summary { align-items: center; }
+.mailbox-avatar {
+    display: grid;
+    place-items: center;
+    flex: 0 0 2.1rem;
+    height: 2.1rem;
+    border-radius: 50%;
+    color: var(--g4-wine);
+    background: var(--g4-rose);
+    font-size: .72rem;
+    font-weight: 750;
+}
+.mailbox-list [data-unread] summary { background: #fcf4f7; }
+.mailbox-list details[open] summary { background: #f5e1e9; }
+.mailbox-message-body h2 { margin-bottom: .65rem; }
+.mailbox-message-body > p { color: var(--g4-muted); }
+.mailbox-message-body [data-copy] { background: var(--g4-wine); color: #fff; border-color: transparent; }

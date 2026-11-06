@@ -3,7 +3,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="/brand/mail4u-workspace.css?v=2">
+    <link rel="stylesheet" href="/brand/mail4u-workspace.css?v=3">
 {% endblock %}
 
 {% block body %}
@@ -77,7 +77,7 @@
                 <details class="box mail4u-message" data-message data-message-id="{{ email.id }}"
                          {% if email.readAt is null %}data-unread data-csrf="{{ csrf_token('client-inbox-' ~ box.uuid) }}"{% endif %}>
                     <summary>
-                        <span data-message-search><strong>{{ email.fromName ?: (email.fromAddress ?? email.realFrom) }}</strong><span>{{ email.subject ?? '(Sem assunto)' }}</span><small>{{ email.fromAddress ?? email.realFrom }}</small></span>
+                        {% set sender = email.fromName ?: (email.fromAddress ?? email.realFrom) %}<span class="mailbox-avatar" aria-hidden="true">{{ sender|slice(0, 2)|upper }}</span><span data-message-search><strong>{{ sender }}</strong><span>{{ email.subject ?? '(Sem assunto)' }}</span><small>{{ email.fromAddress ?? email.realFrom }}</small></span>
                         <time>{{ email.createdAt|date('d/m H:i') }}</time>
                         {% if email.readAt is null %}<span class="tag is-light" data-unread-label>Não lida</span>{% endif %}
                     </summary>

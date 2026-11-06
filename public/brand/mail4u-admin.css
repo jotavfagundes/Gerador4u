@@ -59,3 +59,9 @@
     color: var(--g4-dark);
     font-size: 1.1rem;
 }
+
+.mail4u-dashboard .g4-intro { background: #fff; }
+.mail4u-dashboard .g4-stat { display: flex; gap: .85rem; align-items: center; border-top-width: 1px; }
+.mail4u-dashboard .g4-stat i { color: var(--g4-wine); font-size: 1.25rem; }
+.mail4u-dashboard .g4-stat strong { margin: 0; line-height: 1.15; }
+.mail4u-dashboard .g4-stat span { font-size: .85rem; }

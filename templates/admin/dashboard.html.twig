@@ -11,7 +11,7 @@
     <section class="section mail4u-dashboard">
         <div class="container">
             <div class="g4-intro">
-                <span class="g4-label">MAIL4U · ADMINISTRAÇÃO</span>
+
                 <p>Acompanhe as caixas e o recebimento de mensagens.</p>
             </div>
             <div class="g4-stats">
@@ -21,8 +21,34 @@
                     'Mensagens recebidas': receivedEmailsWithEmailBoxCount + receivedEmailsWithoutEmailBoxCount,
                     'Mensagens não lidas': unreadEmails
                 } %}
-                    <div class="g4-card g4-stat"><span>{{ label }}</span><strong>{{ value }}</strong></div>
+                    <div class="g4-card g4-stat"><i class="fas {{ ['fa-globe', 'fa-inbox', 'fa-envelope', 'fa-envelope-open'][loop.index0] }}" aria-hidden="true"></i><div><strong>{{ value }}</strong><span>{{ label }}</span></div></div>
                 {% endfor %}
+            </div>
+
+            <h2 class="mb-3">Caixas recentes</h2>
+            <div class="table-responsive mb-4">
+                <table class="table">
+                    <thead><tr><th>E-mail</th><th>Status</th><th>Recebe até</th></tr></thead>
+                    <tbody>
+                    {% for mailbox in recentMailboxes %}
+                        <tr>
+                            <td>{{ mailbox.email }}</td>
+                            <td>
+                                {% if mailbox.expiresAt is null %}
+                                    <span class="badge text-bg-secondary">Sem prazo</span>
+                                {% elseif mailbox.expiresAt > date() %}
+                                    <span class="badge text-bg-success">Ativa</span>
+                                {% else %}
+                                    <span class="badge text-bg-secondary">Expirada</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ mailbox.expiresAt ? mailbox.expiresAt|date('d/m/Y') : '—' }}</td>
+                        </tr>
+                    {% else %}
+                        <tr><td colspan="3">Nenhuma caixa cadastrada.</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
             </div>
 
             {% if activeDomainsCount == 0 %}

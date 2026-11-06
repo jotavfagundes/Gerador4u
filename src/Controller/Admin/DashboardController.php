@@ -32,6 +32,7 @@ class DashboardController extends AbstractDashboardController
         return $this->render('admin/dashboard.html.twig', [
             'activeDomainsCount' => $this->domainRepository->countOfActiveDomains(),
             'temporaryEmailBoxCount' => $this->temporaryEmailBoxRepository->count(),
+            'recentMailboxes' => $this->temporaryEmailBoxRepository->findBy([], ['createdAt' => 'DESC'], 5),
 
             'receivedEmailsWithEmailBoxCount' => $this->receivedEmailRepository->countWithTemporaryEmailBox(),
             'receivedEmailsWithoutEmailBoxCount' => $this->receivedEmailRepository->countWithoutTemporaryEmailBox(),
@@ -60,8 +61,8 @@ class DashboardController extends AbstractDashboardController
     public function configureAssets(): Assets
     {
         return Assets::new()
-            ->addCssFile('/brand/mail4u.css')
-            ->addCssFile('/brand/mail4u-admin.css')
+            ->addCssFile('/brand/mail4u.css?v=3')
+            ->addCssFile('/brand/mail4u-admin.css?v=3')
             ->addJsFile('/brand/mail4u-inbox.js?v=2');
     }
 

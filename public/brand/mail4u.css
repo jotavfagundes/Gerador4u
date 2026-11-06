@@ -143,3 +143,27 @@ body { background: var(--g4-bg); color: var(--g4-text); min-height: 100vh; }
         width: 100%;
     }
 }
+
+.mail4u-home-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 1.5rem clamp(2rem, 6vw, 5rem);
+}
+.mail4u-home .g4-intro { border: 0; padding: 0; margin: 0; }
+.mail4u-home .g4-intro h1 { color: var(--g4-dark); line-height: 1.1; }
+.mail4u-home .g4-intro p { max-width: 30rem; line-height: 1.65; }
+.mail4u-home .g4-workspace { min-width: 0; }
+.mail4u-home .g4-workspace form { border-top: 1px solid var(--g4-line); }
+.mail4u-home .g4-workspace form .buttons { display: grid; gap: .65rem; }
+.mail4u-home .g4-workspace form .buttons .button { width: 100%; }
+.mail4u-home .mail4u-home-guide {
+    grid-column: 1 / -1;
+    padding: 1rem 0;
+    background: transparent;
+    border-top: 1px solid var(--g4-line);
+    border-radius: 0;
+}
+@media (max-width: 760px) {
+    .mail4u-home-layout { grid-template-columns: minmax(0, 1fr); }
+}
