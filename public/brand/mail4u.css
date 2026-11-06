@@ -143,3 +143,47 @@ body { background: var(--g4-bg); color: var(--g4-text); min-height: 100vh; }
         width: 100%;
     }
 }
+
+.mailbox-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+.mailbox-header .title { margin-bottom: .35rem; }
+.mailbox-header p { color: var(--g4-muted); overflow-wrap: anywhere; }
+.mailbox-settings { margin-bottom: 1rem; }
+.mailbox-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    background: #fff;
+    border: 1px solid var(--g4-line);
+    border-radius: 1rem;
+    box-shadow: 0 8px 24px #46002209;
+}
+.mailbox-list { min-width: 0; padding: 1rem; }
+.mailbox-list h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; }
+.mailbox-list h2 span { color: var(--g4-muted); font-size: .8rem; margin-left: .4rem; }
+.mailbox-list .mail4u-message { padding: 0; margin: 0; box-shadow: none; border-bottom: 1px solid var(--g4-line); border-radius: .4rem; }
+.mailbox-list summary { display: flex; align-items: start; gap: .5rem; padding: .8rem; list-style: none; }
+.mailbox-list summary::-webkit-details-marker { display: none; }
+.mailbox-list summary:hover, .mailbox-list details[open] summary { background: var(--g4-rose); }
+.mailbox-list [data-message-search] { display: grid; gap: .12rem; flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.mailbox-list summary time, .mailbox-list summary small, .mailbox-list-empty { font-size: .8rem; color: var(--g4-muted); }
+.mailbox-list summary time { white-space: nowrap; }
+.mailbox-reader { min-width: 0; }
+.mailbox-reader.has-message .mailbox-placeholder { display: none; }
+.mailbox-placeholder { padding: 3rem 1.25rem; text-align: center; color: var(--g4-muted); }
+.mailbox-placeholder span { display: inline-grid; place-items: center; width: 3rem; height: 3rem; border-radius: .75rem; background: var(--g4-rose); color: var(--g4-wine); font-size: 1.5rem; }
+.mailbox-placeholder h2 { margin: .75rem 0 .25rem; font-weight: 700; color: var(--g4-text); }
+.mailbox-message-body { padding: 1rem; }
+@media (min-width: 850px) {
+    .mailbox-layout { grid-template-columns: minmax(18rem, 1fr) minmax(0, 1.65fr); min-height: 28rem; }
+    .mailbox-reader { border-left: 1px solid var(--g4-line); display: grid; align-content: start; }
+    .mailbox-reader:not(.has-message) { align-content: center; }
+}
+@media (max-width: 849px) {
+    .mailbox-list:has([data-message]) + .mailbox-reader { display: none; }
+}

@@ -18,6 +18,20 @@ document.addEventListener('click', async (event) => {
 
 const search = document.querySelector('#message-search');
 const messages = document.querySelectorAll('[data-message]');
+const reader = document.querySelector('[data-reader]');
+const wideInbox = window.matchMedia('(min-width: 850px)');
+let selectedMessage;
+
+function returnMessageToList() {
+    if (!selectedMessage) return;
+    selectedMessage.append(reader.querySelector('.mailbox-message-body'));
+    reader.classList.remove('has-message');
+    selectedMessage = undefined;
+}
+
+wideInbox.addEventListener('change', () => {
+    if (!wideInbox.matches) returnMessageToList();
+});
 search?.addEventListener('input', () => {
     const term = search.value.trim().toLocaleLowerCase('pt-BR');
     let found = false;
@@ -31,6 +45,15 @@ search?.addEventListener('input', () => {
 
 for (const message of messages) {
     message.addEventListener('toggle', async () => {
+        if (!message.open && selectedMessage === message) returnMessageToList();
+        if (message.open && wideInbox.matches && selectedMessage !== message) {
+            const previous = selectedMessage;
+            returnMessageToList();
+            if (previous) previous.open = false;
+            reader.append(message.querySelector('.mailbox-message-body'));
+            reader.classList.add('has-message');
+            selectedMessage = message;
+        }
         if (!message.open || !message.hasAttribute('data-unread')) return;
 
         const body = new URLSearchParams({

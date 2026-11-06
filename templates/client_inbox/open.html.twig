@@ -4,7 +4,7 @@
 {% block body %}
 <section class="section g4-main">
     <div class="container">
-        <h1 class="title">Caixa de entrada</h1>
+        {% if not unlocked %}<h1 class="title">Caixa de entrada</h1>{% endif %}
         {% if not unlocked %}
             <form method="post" class="box" style="max-width: 30rem">
                 <input type="hidden" name="_token" value="{{ csrf_token('client-inbox-' ~ box.uuid) }}">
@@ -18,14 +18,14 @@
                 <button class="button is-primary">Abrir caixa</button>
             </form>
         {% else %}
-            <p class="subtitle">{{ box.email }}</p>
+            <header class="mailbox-header"><div><h1 class="title">Caixa de entrada</h1><p>{{ box.email }}</p></div><a class="button" href="{{ path('app_client_inbox', {uuid: box.uuid}) }}">Atualizar mensagens</a></header>
             {% for notice in app.flashes('success') %}
                 <p class="notification is-success is-light">{{ notice }}</p>
             {% endfor %}
             {% for notice in app.flashes('error') %}
                 <p class="notification is-danger is-light">{{ notice }}</p>
             {% endfor %}
-            <details class="box g4-card">
+            <details class="mailbox-settings">
                 <summary>Alterar senha da caixa</summary>
                 <form method="post" class="mt-4">
                     <input type="hidden" name="_token" value="{{ csrf_token('client-inbox-' ~ box.uuid) }}">
@@ -49,8 +49,9 @@
                 {% else %}
                     Prazo de recebimento encerrado. As mensagens guardadas continuam disponíveis para consulta.
                 {% endif %}
-                <a href="{{ path('app_client_inbox', {uuid: box.uuid}) }}">Atualizar mensagens</a>
+
             </p>
+            <div class="mailbox-layout"><div class="mailbox-list"><h2>Recebidas <span>{{ emails|length }}</span></h2>
             {% if emails is not empty %}
                 <div class="field">
                     <label class="label" for="message-search">Buscar mensagens</label>
@@ -62,20 +63,24 @@
                 <details class="box mail4u-message" data-message
                          {% if email.readAt is null %}data-unread data-message-id="{{ email.id }}" data-csrf="{{ csrf_token('client-inbox-' ~ box.uuid) }}"{% endif %}>
                     <summary>
-                        <span data-message-search>{{ email.subject ?? '(Sem assunto)' }} · {{ email.fromAddress ?? email.realFrom }} {{ email.fromName }}</span>
-                        <span> · {{ email.createdAt|date('d/m/Y H:i') }}</span>
+                        <span data-message-search><strong>{{ email.fromName ?: (email.fromAddress ?? email.realFrom) }}</strong><span>{{ email.subject ?? '(Sem assunto)' }}</span><small>{{ email.fromAddress ?? email.realFrom }}</small></span>
+                        <time>{{ email.createdAt|date('d/m H:i') }}</time>
                         {% if email.readAt is null %}<span class="tag is-light" data-unread-label>Não lida</span>{% endif %}
                     </summary>
+                    <div class="mailbox-message-body">
+                    <h2 class="title is-5">{{ email.subject ?? '(Sem assunto)' }}</h2>
+                    <p>{{ email.fromAddress ?? email.realFrom }} · {{ email.createdAt|date('d/m/Y H:i') }}</p>
                     {% set text = email.metadata.text ?? email.html|default('')|striptags %}
                     {% if 'fast it' in ((email.subject ?? '') ~ ' ' ~ text)|lower or 'fastit' in email.realFrom|lower %}
                         <div data-fast-it="{{ text }}" data-fast-it-subject="{{ email.subject ?? '' }}"></div>
                     {% endif %}
                     <iframe class="mt-3" title="Conteúdo do e-mail" sandbox="allow-popups allow-popups-to-escape-sandbox" style="width: 100%; min-height: 18rem"
                             srcdoc="{{ ('<meta http-equiv="Content-Security-Policy" content="default-src &apos;none&apos;; style-src &apos;unsafe-inline&apos;"><meta name="referrer" content="no-referrer"><base target="_blank">' ~ (email.html ?? ''))|e('html_attr') }}"></iframe>
+                    </div>
                 </details>
             {% else %}
-                <p>Ainda não há mensagens nesta caixa.</p>
-            {% endfor %}
+                <p class="mailbox-list-empty">Nenhuma mensagem</p>
+            {% endfor %}</div><div class="mailbox-reader" data-reader><div class="mailbox-placeholder"><span aria-hidden="true">✉</span><h2>{{ emails is empty ? 'Sua caixa está vazia' : 'Selecione uma mensagem' }}</h2><p>{{ emails is empty ? 'Os e-mails recebidos neste endereço aparecerão aqui.' : 'Escolha um e-mail na lista para ler a mensagem.' }}</p></div></div></div>
         {% endif %}
     </div>
 </section>
