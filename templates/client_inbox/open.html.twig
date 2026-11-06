@@ -1,8 +1,13 @@
 {% extends 'base.html.twig' %}
 {% block title %}Acessar caixa de e-mail - Mail4u{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="/brand/mail4u-workspace.css">
+{% endblock %}
+
 {% block body %}
-<section class="section g4-main">
+<section class="section g4-main{% if unlocked %} mailbox-workspace{% endif %}">
     <div class="container">
         {% if not unlocked %}<h1 class="title">Caixa de entrada</h1>{% endif %}
         {% if not unlocked %}
@@ -25,6 +30,13 @@
             {% for notice in app.flashes('error') %}
                 <p class="notification is-danger is-light">{{ notice }}</p>
             {% endfor %}
+            <div class="mailbox-layout">
+                <aside class="mailbox-sidebar" aria-label="Opções da caixa">
+                    <h2>Pastas</h2>
+                    <a class="mailbox-folder" href="{{ path('app_client_inbox', {uuid: box.uuid}) }}" aria-current="page">
+                        <span aria-hidden="true">✉</span> Caixa de entrada
+                    </a>
+                    <p class="mailbox-sidebar-label">Configurações da caixa</p>
             <details class="mailbox-settings">
                 <summary>Alterar senha da caixa</summary>
                 <form method="post" class="mt-4">
@@ -51,7 +63,7 @@
                 {% endif %}
 
             </p>
-            <div class="mailbox-layout"><div class="mailbox-list"><h2>Recebidas <span>{{ emails|length }}</span></h2>
+            </aside><div class="mailbox-list"><h2>Recebidas <span>{{ emails|length }}</span></h2>
             {% if emails is not empty %}
                 <div class="field">
                     <label class="label" for="message-search">Buscar mensagens</label>
