@@ -18,11 +18,20 @@
         {% endif %}
         {% for credentials in app.flashes('client_inbox_credentials') %}
             {% set link = path('app_client_inbox', {uuid: credentials.uuid}) %}
-            <div class="notification is-success is-light">
+            <div class="box g4-card mail4u-result">
+                <h2 class="title is-5">Caixa criada</h2>
                 <p><strong>E-mail:</strong> {{ credentials.email }}</p>
                 <p><strong>Senha da caixa:</strong> <code>{{ credentials.password }}</code></p>
                 <p><strong>Link:</strong> <a data-client-inbox-link href="{{ link }}">{{ link }}</a></p>
                 <p>Guarde a senha agora. Ela só é exibida nesta tela após a criação.</p>
+                {% if credentials.expiresAt is defined %}
+                    <p>Recebe mensagens até {{ credentials.expiresAt }}.</p>
+                {% endif %}
+                <div class="buttons mt-4">
+                    <button type="button" class="button" data-copy="{{ credentials.email }}">Copiar e-mail</button>
+                    <button type="button" class="button" data-copy="{{ 'E-mail: ' ~ credentials.email ~ "\nSenha: " ~ credentials.password ~ "\nLink: " ~ url('app_client_inbox', {uuid: credentials.uuid}) }}">Copiar dados de acesso</button>
+                    <a class="button is-primary" href="{{ link }}">Abrir caixa</a>
+                </div>
             </div>
         {% endfor %}
         <form method="post" class="box g4-card">
@@ -38,7 +47,10 @@
                     <input class="input" id="last_name" name="last_name" maxlength="80" required>
                 </div>
             </div>
-            <button class="button is-primary">Criar caixa de e-mail</button>
+            <div class="buttons">
+                <button class="button is-primary">Criar caixa de e-mail</button>
+                <a class="button" href="{{ path('app_client_inbox_login') }}">Acessar uma caixa</a>
+            </div>
         </form>
         </div>
         <aside class="g4-guide">
@@ -57,4 +69,5 @@
         link.textContent = link.href;
     });
 </script>
+<script src="/brand/mail4u-inbox.js" defer></script>
 {% endblock %}

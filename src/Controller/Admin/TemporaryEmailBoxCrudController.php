@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\TemporaryEmailBox;
+use App\Repository\ReceivedEmailRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -18,6 +19,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class TemporaryEmailBoxCrudController extends AbstractCrudController
 {
+    public function __construct(private ReceivedEmailRepository $messages)
+    {
+    }
+
     public static function getEntityFqcn(): string
     {
         return TemporaryEmailBox::class;
@@ -35,6 +40,13 @@ class TemporaryEmailBoxCrudController extends AbstractCrudController
             AssociationField::new('receivedEmails', 'E-mails recebidos')
                 ->hideOnForm(),
             DateTimeField::new('createdAt', 'Criado em')->setDisabled(),
+            DateTimeField::new('expiresAt', 'Recebe até')->hideOnForm(),
+            TextField::new('latestMessage', 'Última mensagem')->hideOnForm()->setSortable(false)
+                ->formatValue(function ($value, TemporaryEmailBox $box): string {
+                    $message = $this->messages->findOneBy(['temporaryEmailBox' => $box], ['createdAt' => 'DESC']);
+
+                    return $message?->getCreatedAt()?->format('d/m/Y H:i') ?? 'Sem mensagens';
+                }),
             DateTimeField::new('lastAccessedAt', 'Último acesso em')->setDisabled(),
             TextField::new('newAccessPassword', 'Nova senha da caixa')
                 ->onlyWhenUpdating()
@@ -75,6 +87,7 @@ class TemporaryEmailBoxCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('Caixa de e-mail')
             ->setEntityLabelInPlural('Caixas de e-mail')
+            ->setSearchFields(['email'])
             ->setDefaultSort(['createdAt' => 'DESC']);
     }
 }

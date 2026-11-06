@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\DomainRepository;
+use App\Repository\ReceivedEmailRepository;
 use App\Repository\TemporaryEmailBoxRepository;
 use App\Service\Client\ClientIpRetriever;
 use App\Service\Factory\TemporaryEmailBoxFactory;
@@ -118,7 +119,12 @@ final class ClientInboxController extends AbstractController
             return $this->redirectToRoute('app_home', status: 303);
         }
 
-        $this->addFlash('client_inbox_credentials', ['uuid' => $box->getUuid(), 'email' => $email, 'password' => $password]);
+        $this->addFlash('client_inbox_credentials', [
+            'uuid' => $box->getUuid(),
+            'email' => $email,
+            'password' => $password,
+            'expiresAt' => $box->getExpiresAt()?->format('d/m/Y'),
+        ]);
 
         return $this->redirectToRoute('app_home', status: 303);
     }
@@ -142,7 +148,7 @@ final class ClientInboxController extends AbstractController
     }
 
     #[Route('/caixa/{uuid}', name: 'app_client_inbox', requirements: ['uuid' => '[0-9a-f-]{36}'], methods: ['GET', 'POST'])]
-    public function open(Request $request, string $uuid, TemporaryEmailBoxRepository $inboxes, ReceivedEmailsFetcher $messages, EntityManagerInterface $entityManager): Response
+    public function open(Request $request, string $uuid, TemporaryEmailBoxRepository $inboxes, ReceivedEmailsFetcher $messages, ReceivedEmailRepository $receivedEmails, EntityManagerInterface $entityManager): Response
     {
         $box = $inboxes->findOneBy(['uuid' => $uuid]);
         if ($box === null || !$box->isClientInbox()) {
@@ -156,6 +162,25 @@ final class ClientInboxController extends AbstractController
         if ($request->isMethod('POST')) {
             if (!$this->isCsrfTokenValid('client-inbox-' . $uuid, $request->request->getString('_token'))) {
                 throw $this->createAccessDeniedException();
+            }
+
+            if ($request->request->getString('action') === 'mark-read') {
+                if (!$unlocked) {
+                    throw $this->createAccessDeniedException();
+                }
+                $message = $receivedEmails->findOneBy([
+                    'id' => $request->request->getInt('message_id'),
+                    'temporaryEmailBox' => $box,
+                ]);
+                if ($message === null) {
+                    throw $this->createNotFoundException();
+                }
+                if ($message->getReadAt() === null) {
+                    $message->setReadAt(new \DateTimeImmutable());
+                    $entityManager->flush();
+                }
+
+                return new Response(status: 204);
             }
 
             $password = $request->request->getString('password');

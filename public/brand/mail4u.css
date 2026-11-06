@@ -121,6 +121,23 @@ body { background: var(--g4-bg); color: var(--g4-text); min-height: 100vh; }
     border-top: 1px solid var(--g4-line);
 }
 
+.mail4u-result {
+    overflow-wrap: anywhere;
+}
+
+.mail4u-message[data-unread] {
+    border-inline-start: 3px solid var(--g4-wine);
+}
+
+.mail4u-message[data-unread] summary {
+    font-weight: 700;
+}
+
+.mail4u-message[hidden],
+#message-search-empty[hidden] {
+    display: none;
+}
+
 @media (max-width: 720px) {
     .mail4u-home .button.is-primary {
         width: 100%;

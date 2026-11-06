@@ -51,9 +51,25 @@
                 {% endif %}
                 <a href="{{ path('app_client_inbox', {uuid: box.uuid}) }}">Atualizar mensagens</a>
             </p>
+            {% if emails is not empty %}
+                <div class="field">
+                    <label class="label" for="message-search">Buscar mensagens</label>
+                    <input class="input" type="search" id="message-search" placeholder="Assunto ou remetente">
+                </div>
+                <p id="message-search-empty" hidden>Nenhuma mensagem encontrada.</p>
+            {% endif %}
             {% for email in emails %}
-                <details class="box">
-                    <summary>{{ email.subject ?? '(Sem assunto)' }} · {{ email.fromAddress ?? email.realFrom }} · {{ email.createdAt|date('d/m/Y H:i') }}</summary>
+                <details class="box mail4u-message" data-message
+                         {% if email.readAt is null %}data-unread data-message-id="{{ email.id }}" data-csrf="{{ csrf_token('client-inbox-' ~ box.uuid) }}"{% endif %}>
+                    <summary>
+                        <span data-message-search>{{ email.subject ?? '(Sem assunto)' }} · {{ email.fromAddress ?? email.realFrom }} {{ email.fromName }}</span>
+                        <span> · {{ email.createdAt|date('d/m/Y H:i') }}</span>
+                        {% if email.readAt is null %}<span class="tag is-light" data-unread-label>Não lida</span>{% endif %}
+                    </summary>
+                    {% set text = email.metadata.text ?? email.html|default('')|striptags %}
+                    {% if 'fast it' in ((email.subject ?? '') ~ ' ' ~ text)|lower or 'fastit' in email.realFrom|lower %}
+                        <div data-fast-it="{{ text }}" data-fast-it-subject="{{ email.subject ?? '' }}"></div>
+                    {% endif %}
                     <iframe class="mt-3" title="Conteúdo do e-mail" sandbox="allow-popups allow-popups-to-escape-sandbox" style="width: 100%; min-height: 18rem"
                             srcdoc="{{ ('<meta http-equiv="Content-Security-Policy" content="default-src &apos;none&apos;; style-src &apos;unsafe-inline&apos;"><meta name="referrer" content="no-referrer"><base target="_blank">' ~ (email.html ?? ''))|e('html_attr') }}"></iframe>
                 </details>
@@ -63,4 +79,5 @@
         {% endif %}
     </div>
 </section>
+{% if unlocked %}<script src="/brand/mail4u-inbox.js" defer></script>{% endif %}
 {% endblock %}
