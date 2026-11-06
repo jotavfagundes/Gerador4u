@@ -3,7 +3,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="/brand/mail4u-workspace.css?v=3">
+    <link rel="stylesheet" href="/brand/mail4u-workspace.css?v=4">
 {% endblock %}
 
 {% block body %}
@@ -23,7 +23,7 @@
                 <button class="button is-primary">Abrir caixa</button>
             </form>
         {% else %}
-            <header class="mailbox-header"><div><h1 class="title">Caixa de entrada</h1><p>{{ box.email }}</p></div><a class="button" href="{{ path('app_client_inbox', {uuid: box.uuid}) }}">Atualizar mensagens</a></header>
+            <header class="mailbox-header"><div><h1 class="title">Caixa de entrada</h1><p>{{ box.email }}</p></div><input class="input mailbox-search" type="search" id="message-search" aria-label="Buscar por assunto ou remetente" placeholder="Pesquisar e-mails"><a class="button" href="{{ path('app_client_inbox', {uuid: box.uuid}) }}">Atualizar</a></header>
             {% for notice in app.flashes('success') %}
                 <p class="notification is-success is-light">{{ notice }}</p>
             {% endfor %}
@@ -66,10 +66,6 @@
             </p>
             </aside><div class="mailbox-list"><h2>Recebidas <span data-message-count>{{ emails|length }}</span></h2>
                 <p class="help" aria-live="polite"><span data-unread-count>{{ emails|filter(email => email.readAt is null)|length }}</span> não lidas</p>
-                <div class="field">
-                    <label class="label" for="message-search">Buscar mensagens</label>
-                    <input class="input" type="search" id="message-search" placeholder="Assunto ou remetente">
-                </div>
                 <p id="message-search-empty" hidden>Nenhuma mensagem encontrada.</p>
             <div data-message-rows>
             {% block message_rows %}
@@ -78,8 +74,8 @@
                          {% if email.readAt is null %}data-unread data-csrf="{{ csrf_token('client-inbox-' ~ box.uuid) }}"{% endif %}>
                     <summary>
                         {% set sender = email.fromName ?: (email.fromAddress ?? email.realFrom) %}<span class="mailbox-avatar" aria-hidden="true">{{ sender|slice(0, 2)|upper }}</span><span data-message-search><strong>{{ sender }}</strong><span>{{ email.subject ?? '(Sem assunto)' }}</span><small>{{ email.fromAddress ?? email.realFrom }}</small></span>
-                        <time>{{ email.createdAt|date('d/m H:i') }}</time>
-                        {% if email.readAt is null %}<span class="tag is-light" data-unread-label>Não lida</span>{% endif %}
+                        <span class="mailbox-row-meta"><time>{{ email.createdAt|date('d/m H:i') }}</time>
+                        {% if email.readAt is null %}<span class="mailbox-unread-dot" data-unread-label aria-label="Não lida"></span>{% endif %}</span>
                     </summary>
                     <div class="mailbox-message-body">
                     <h2 class="title is-5">{{ email.subject ?? '(Sem assunto)' }}</h2>
