@@ -49,7 +49,7 @@ class DashboardController extends AbstractDashboardController
     {
         return Dashboard::new()
             ->disableDarkMode()
-            ->setFaviconPath('brand/mail4u-favicon.ico')
+            ->setFaviconPath('brand/mail4u-favicon-final.ico')
             ->generateRelativeUrls()
             ->setTitle('<img class="mail4u-admin-logo" src="/brand/mail4u-logo-original.png" alt="Mail4u"><span class="mail4u-admin-caption">Administração</span>');
     }
