@@ -1,5 +1,7 @@
 twig:
     file_name_pattern: '*.twig'
+    date:
+        timezone: '%app.display_timezone%'
 
 when@test:
     twig:

@@ -20,6 +20,10 @@ use Psr\Cache\CacheItemPoolInterface;
 
 final class ClientInboxController extends AbstractController
 {
+    public function __construct(private readonly string $displayTimezone)
+    {
+    }
+
     #[Route('/acessar-caixa', name: 'app_client_inbox_login', methods: ['GET', 'POST'])]
     public function login(
         Request $request,
@@ -128,7 +132,7 @@ final class ClientInboxController extends AbstractController
             'uuid' => $box->getUuid(),
             'email' => $email,
             'password' => $password,
-            'expiresAt' => $box->getExpiresAt()?->format('d/m/Y'),
+            'expiresAt' => $box->getExpiresAt()?->setTimezone(new \DateTimeZone($this->displayTimezone))->format('d/m/Y'),
         ]);
 
         return $this->redirectToRoute('app_home', status: 303);

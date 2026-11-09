@@ -27,6 +27,7 @@ class TemporaryEmailBoxCrudController extends AbstractCrudController
         private ReceivedEmailRepository $messages,
         private AdminUrlGenerator $urls,
         private DomainRepository $domains,
+        private readonly string $displayTimezone,
     ) {
     }
 
@@ -46,15 +47,19 @@ class TemporaryEmailBoxCrudController extends AbstractCrudController
             AssociationField::new('owner', 'Responsável'),
             AssociationField::new('receivedEmails', 'E-mails recebidos')
                 ->hideOnForm(),
-            DateTimeField::new('createdAt', 'Criado em')->setDisabled(),
+            DateTimeField::new('createdAt', 'Criado em')->setDisabled()
+                ->setFormTypeOption('view_timezone', $this->displayTimezone),
             DateTimeField::new('expiresAt', 'Recebe até')->hideOnForm(),
             TextField::new('latestMessage', 'Última mensagem')->hideOnForm()->setSortable(false)
                 ->formatValue(function ($value, TemporaryEmailBox $box): string {
                     $message = $this->messages->findOneBy(['temporaryEmailBox' => $box], ['createdAt' => 'DESC']);
 
-                    return $message?->getCreatedAt()?->format('d/m/Y H:i') ?? 'Sem mensagens';
+                    return $message?->getCreatedAt()
+                        ?->setTimezone(new \DateTimeZone($this->displayTimezone))
+                        ->format('d/m/Y H:i') ?? 'Sem mensagens';
                 }),
-            DateTimeField::new('lastAccessedAt', 'Último acesso em')->setDisabled(),
+            DateTimeField::new('lastAccessedAt', 'Último acesso em')->setDisabled()
+                ->setFormTypeOption('view_timezone', $this->displayTimezone),
             TextField::new('newAccessPassword', 'Redefinir senha da caixa')
                 ->onlyWhenUpdating()
                 ->setFormType(PasswordType::class)

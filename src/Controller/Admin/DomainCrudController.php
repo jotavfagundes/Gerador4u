@@ -14,6 +14,7 @@ class DomainCrudController extends AbstractCrudController
 {
     public function __construct(
         private readonly ReceivedEmailRepository $receivedEmailRepository,
+        private readonly string $displayTimezone,
     ) {
     }
 
@@ -32,7 +33,8 @@ class DomainCrudController extends AbstractCrudController
                 ->formatValue(function ($value, Domain $entity) {
                     return $this->receivedEmailRepository->countByDomain($entity->getDomain());
                 }),
-            DateTimeField::new('activeUntil', 'Ativo até'),
+            DateTimeField::new('activeUntil', 'Ativo até')
+                ->setFormTypeOption('view_timezone', $this->displayTimezone),
             BooleanField::new('premium', 'Premium'),
         ];
     }

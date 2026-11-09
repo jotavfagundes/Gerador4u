@@ -8,6 +8,7 @@ use App\Repository\ReceivedEmailRepository;
 use App\Repository\TemporaryEmailBoxRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
@@ -24,6 +25,7 @@ class DashboardController extends AbstractDashboardController
         private DomainRepository $domainRepository,
         private TemporaryEmailBoxRepository $temporaryEmailBoxRepository,
         private ReceivedEmailRepository $receivedEmailRepository,
+        private readonly string $displayTimezone,
     ) {
     }
 
@@ -68,6 +70,11 @@ class DashboardController extends AbstractDashboardController
             ->addCssFile('/brand/mail4u.css?v=6')
             ->addCssFile('/brand/mail4u-admin.css?v=6')
             ->addJsFile('/brand/mail4u-inbox.js?v=3');
+    }
+
+    public function configureCrud(): Crud
+    {
+        return parent::configureCrud()->setTimezone($this->displayTimezone);
     }
 
     public function configureMenuItems(): iterable

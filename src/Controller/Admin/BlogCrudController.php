@@ -14,6 +14,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class BlogCrudController extends AbstractCrudController
 {
+    public function __construct(private readonly string $displayTimezone)
+    {
+    }
+
     public static function getEntityFqcn(): string
     {
         return Blog::class;
@@ -32,7 +36,8 @@ class BlogCrudController extends AbstractCrudController
                 ->setRequired(false),
             TextEditorField::new('shortDescription', 'Resumo'),
             TextEditorField::new('description', 'Descrição'),
-            DateTimeField::new('createdAt', 'Criado em'),
+            DateTimeField::new('createdAt', 'Criado em')
+                ->setFormTypeOption('view_timezone', $this->displayTimezone),
         ];
     }
 
