@@ -3,7 +3,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="/brand/mail4u-workspace.css?v=4">
+    <link rel="stylesheet" href="/brand/mail4u-workspace.css?v=5">
 {% endblock %}
 
 {% block body %}
@@ -66,11 +66,24 @@
             </p>
             </aside><div class="mailbox-list"><h2>Recebidas <span data-message-count>{{ emails|length }}</span></h2>
                 <p class="help" aria-live="polite"><span data-unread-count>{{ emails|filter(email => email.readAt is null)|length }}</span> não lidas</p>
+                <div class="mailbox-filters" role="group" aria-label="Filtrar mensagens" hidden>
+                    <button type="button" data-message-filter="all" aria-pressed="true">Todas</button>
+                    <button type="button" data-message-filter="unread" aria-pressed="false">Não lidas</button>
+                    <button type="button" data-message-filter="fast-it" aria-pressed="false">Fast IT</button>
+                </div>
+                <aside class="mailbox-fast-it" aria-label="Código do Fast IT" hidden>
+                    <strong>Último código detectado do Fast IT</strong>
+                    <p data-fast-it-info></p>
+                    <div><code data-fast-it-code></code><button type="button" class="button is-small" data-copy>Copiar código</button></div>
+                </aside>
                 <p id="message-search-empty" hidden>Nenhuma mensagem encontrada.</p>
             <div data-message-rows>
             {% block message_rows %}
             {% for email in emails %}
+                {% set text = email.metadata.text ?? email.html|default('')|striptags %}
+                {% set fastIt = 'fast it' in ((email.subject ?? '') ~ ' ' ~ text)|lower or 'fastit' in email.realFrom|lower or email.realFrom|lower == 'maeci@esteri.it' %}
                 <details class="box mail4u-message" data-message data-message-id="{{ email.id }}"
+                         {% if fastIt %}data-fast-it-message{% endif %}
                          {% if email.readAt is null %}data-unread data-csrf="{{ csrf_token('client-inbox-' ~ box.uuid) }}"{% endif %}>
                     <summary>
                         {% set sender = email.fromName ?: (email.fromAddress ?? email.realFrom) %}<span class="mailbox-avatar" aria-hidden="true">{{ sender|slice(0, 2)|upper }}</span><span data-message-search><strong>{{ sender }}</strong><span>{{ email.subject ?? '(Sem assunto)' }}</span><small>{{ email.fromAddress ?? email.realFrom }}</small></span>
@@ -80,8 +93,7 @@
                     <div class="mailbox-message-body">
                     <h2 class="title is-5">{{ email.subject ?? '(Sem assunto)' }}</h2>
                     <p>{{ email.fromAddress ?? email.realFrom }} · {{ email.createdAt|date('d/m/Y H:i') }}</p>
-                    {% set text = email.metadata.text ?? email.html|default('')|striptags %}
-                    {% if 'fast it' in ((email.subject ?? '') ~ ' ' ~ text)|lower or 'fastit' in email.realFrom|lower %}
+                    {% if fastIt %}
                         <div data-fast-it="{{ text }}" data-fast-it-subject="{{ email.subject ?? '' }}"></div>
                     {% endif %}
                     <iframe class="mt-3" title="Conteúdo do e-mail" sandbox="allow-popups allow-popups-to-escape-sandbox" style="width: 100%; min-height: 18rem"
@@ -99,5 +111,5 @@
         {% endif %}
     </div>
 </section>
-{% if unlocked %}<script src="/brand/mail4u-inbox.js?v=2" defer></script>{% endif %}
+{% if unlocked %}<script src="/brand/mail4u-inbox.js?v=3" defer></script>{% endif %}
 {% endblock %}

@@ -28,23 +28,26 @@ final class CopyMailcowMessagesCommand extends Command
         $now = new \DateTimeImmutable();
         foreach ($this->messages->findDueMailcowCopies($now) as $message) {
             $id = $message->getId();
-            if (!$this->messages->claimMailcowCopy($id, $now) || !$this->mailcow->supports($message)) {
+            if (!$this->messages->claimMailcowCopy($id, new \DateTimeImmutable())) {
                 continue;
             }
             try {
-                if (!$this->mailboxes->hasActiveMailbox($message->getRealTo())) {
-                    $output->writeln(sprintf('Mailcow copy %d: waiting for an active mailbox.', $id));
-                    continue;
+                $status = 'queued';
+                if ($this->mailcow->supports($message) && $this->mailboxes->hasActiveMailbox($message->getRealTo())) {
+                    $this->mailcow->copy($message);
+                    $status = 'accepted';
                 }
-                $this->mailcow->copy($message);
             } catch (\Exception) {
-                $output->writeln(sprintf('Mailcow copy %d: failed, will retry.', $id));
-                continue;
+                $status = 'failed';
             }
 
-            $message->scheduleMailcowCopy(null);
+            $message->recordMailcowCopyResult($status);
             $this->entityManager->flush();
-            $output->writeln(sprintf('Mailcow copy %d: delivered.', $id));
+            $output->writeln(sprintf('Mailcow copy %d: %s.', $id, match ($status) {
+                'accepted' => 'accepted by SMTP',
+                'failed' => 'failed, will retry',
+                'queued' => 'waiting for an active mailbox and copy configuration',
+            }));
         }
 
         return Command::SUCCESS;

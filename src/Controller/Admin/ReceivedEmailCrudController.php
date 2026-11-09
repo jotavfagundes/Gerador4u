@@ -36,6 +36,9 @@ class ReceivedEmailCrudController extends AbstractCrudController
             TextField::new('toMultipleString', 'Destinatários')->hideOnIndex(),
             TextField::new('bccMultipleString', 'Destinatários em cópia oculta')->hideOnIndex(),
             DateTimeField::new('createdAt', 'Criado em'),
+            TextField::new('mailcowCopyState', 'Cópia no Mailcow')
+                ->hideOnForm()->setSortable(false)->setTemplatePath('admin/field/mailcow_copy_state.html.twig'),
+            DateTimeField::new('mailcowCopyAttemptedAt', 'Última tentativa da cópia')->hideOnForm(),
             DateTimeField::new('readAt', 'Lido em'),
             DateTimeField::new('subjectReadAt', 'Assunto lido em'),
             TextField::new('html', 'HTML')->hideOnIndex(),

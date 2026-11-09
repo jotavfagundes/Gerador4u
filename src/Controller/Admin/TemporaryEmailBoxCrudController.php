@@ -2,8 +2,10 @@
 
 namespace App\Controller\Admin;
 
+use App\Controller\Admin\Filter\MailboxDomainFilter;
 use App\Controller\Admin\Filter\MailboxExpiryFilter;
 use App\Entity\TemporaryEmailBox;
+use App\Repository\DomainRepository;
 use App\Repository\ReceivedEmailRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -21,8 +23,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class TemporaryEmailBoxCrudController extends AbstractCrudController
 {
-    public function __construct(private ReceivedEmailRepository $messages, private AdminUrlGenerator $urls)
-    {
+    public function __construct(
+        private ReceivedEmailRepository $messages,
+        private AdminUrlGenerator $urls,
+        private DomainRepository $domains,
+    ) {
     }
 
     public static function getEntityFqcn(): string
@@ -64,7 +69,13 @@ class TemporaryEmailBoxCrudController extends AbstractCrudController
 
     public function configureFilters(Filters $filters): Filters
     {
+        $choices = [];
+        foreach ($this->domains->findBy([], ['domain' => 'ASC']) as $domain) {
+            $choices[$domain->getDomain()] = $domain->getDomain();
+        }
+
         return $filters
+            ->add(MailboxDomainFilter::new($choices))
             ->add(MailboxExpiryFilter::new())
             ->add(TextFilter::new('countryCode', 'Código do país'));
     }

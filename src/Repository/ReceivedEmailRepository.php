@@ -43,6 +43,7 @@ class ReceivedEmailRepository extends ServiceEntityRepository
         return 1 === $this->createQueryBuilder('r')
             ->update()
             ->set('r.mailcowCopyAfter', ':retry')
+            ->set('r.mailcowCopyAttemptedAt', ':now')
             ->where('r.id = :id AND r.mailcowCopyAfter <= :now')
             ->setParameter('id', $id)
             ->setParameter('now', $now)

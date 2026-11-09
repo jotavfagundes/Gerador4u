@@ -20,8 +20,11 @@ const rows = document.querySelector('[data-message-rows]');
 const search = document.querySelector('#message-search');
 const reader = document.querySelector('[data-reader]');
 const back = document.querySelector('[data-mailbox-back]');
+const filters = document.querySelector('.mailbox-filters');
+const fastItCard = document.querySelector('.mailbox-fast-it');
 const wideInbox = window.matchMedia('(min-width: 850px)');
 let selectedMessage;
+let activeFilter = 'all';
 
 function closeMessage() {
     if (!selectedMessage) return;
@@ -53,9 +56,15 @@ function updateList() {
     const messages = Array.from(rows.querySelectorAll('[data-message]'));
     for (const message of messages) {
         const label = message.querySelector('[data-message-search]').textContent;
-        message.hidden = !label.toLocaleLowerCase('pt-BR').includes(term);
+        const matchesFilter = activeFilter === 'all'
+            || (activeFilter === 'unread' && message.hasAttribute('data-unread'))
+            || (activeFilter === 'fast-it' && message.hasAttribute('data-fast-it-message'));
+        message.hidden = !matchesFilter || !label.toLocaleLowerCase('pt-BR').includes(term);
     }
-    document.querySelector('#message-search-empty').hidden = !term || messages.some((message) => !message.hidden);
+    const filtering = Boolean(term) || activeFilter !== 'all';
+    document.querySelector('#message-search-empty').hidden = !filtering || messages.some((message) => !message.hidden);
+    const emptyList = rows.querySelector('.mailbox-list-empty');
+    if (emptyList) emptyList.hidden = filtering;
     document.querySelector('[data-message-count]').textContent = messages.length;
     document.querySelector('[data-unread-count]').textContent = messages.filter((message) => message.hasAttribute('data-unread')).length;
     if (messages.length > 0) {
@@ -64,8 +73,25 @@ function updateList() {
     }
 }
 
+function updateFastItCard() {
+    const message = rows.querySelector('[data-detected-code]');
+    fastItCard.hidden = !message;
+    if (!message) return;
+
+    const sender = message.querySelector('[data-message-search] small').textContent;
+    const time = message.querySelector('time').textContent;
+    fastItCard.querySelector('[data-fast-it-info]').textContent = sender + ' · ' + time;
+    fastItCard.querySelector('[data-fast-it-code]').textContent = message.dataset.detectedCode;
+    fastItCard.querySelector('[data-copy]').dataset.copy = message.dataset.detectedCode;
+}
+
 function prepareMessage(message) {
-    message.querySelectorAll('[data-fast-it]').forEach(addCodeButton);
+    const panel = message.querySelector('[data-fast-it]');
+    const code = panel && detectFastItCode(panel);
+    if (code) {
+        message.dataset.detectedCode = code;
+        addCodeButton(panel, code);
+    }
     message.addEventListener('toggle', async () => {
         if (!message.open) {
             if (selectedMessage === message) closeMessage();
@@ -100,6 +126,16 @@ function prepareMessage(message) {
 
 if (rows) {
     search.addEventListener('input', updateList);
+    filters.hidden = false;
+    filters.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-message-filter]');
+        if (!button) return;
+        activeFilter = button.dataset.messageFilter;
+        filters.querySelectorAll('button').forEach((item) => {
+            item.setAttribute('aria-pressed', String(item === button));
+        });
+        updateList();
+    });
     wideInbox.addEventListener('change', updateReaderMode);
     back.addEventListener('click', () => {
         const summary = selectedMessage?.querySelector('summary');
@@ -110,6 +146,7 @@ if (rows) {
         if (event.key === 'Escape' && selectedMessage && !wideInbox.matches) back.click();
     });
     rows.querySelectorAll('[data-message]').forEach(prepareMessage);
+    updateFastItCard();
 
     async function refreshMessages() {
         if (document.hidden) return;
@@ -130,6 +167,7 @@ if (rows) {
             newMessages.forEach(prepareMessage);
             rows.prepend(...newMessages);
             updateList();
+            updateFastItCard();
         } catch {
             // A later refresh can retry without interrupting the reader.
         }
@@ -142,13 +180,14 @@ if (rows) {
     setTimeout(pollMessages, 15000);
 }
 
-function addCodeButton(panel) {
+function detectFastItCode(panel) {
     const content = panel.dataset.fastItSubject + '\n' + panel.dataset.fastIt;
-    const pattern = /\b(?:c[oó]digo(?:\s+de\s+verifica[cç][aã]o)?|codice(?:\s+di\s+verifica)?|verification\s+code)\s*(?:[:=-]\s*)?(\d{4,8})\b/gi;
+    const pattern = /\b(?:c[oó]digo(?:\s+de\s+(?:verifica[cç][aã]o|ativa[cç][aã]o))?|codice(?:\s+(?:di\s+(?:verifica|attivazione)|OTP))?|(?:verification|activation)\s+code)\s*(?:[:=-]\s*)?(\d{4,8})\b/gi;
     const codes = new Set(Array.from(content.matchAll(pattern), (match) => match[1]));
-    if (codes.size !== 1) return;
+    return codes.size === 1 ? [...codes][0] : null;
+}
 
-    const [code] = codes;
+function addCodeButton(panel, code) {
     const value = document.createElement('code');
     value.textContent = code;
     const button = document.createElement('button');

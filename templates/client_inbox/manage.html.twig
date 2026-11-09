@@ -4,15 +4,6 @@
 {% block body %}
 <section class="mail4u-home">
     <div class="mail4u-home-layout">
-        <div class="g4-intro">
-            <span class="mail4u-home-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg>
-            </span>
-            <h1 class="title">Crie uma caixa<br>para seu cliente</h1>
-            <p>Informe o nome do cliente para gerar um endereço de e-mail exclusivo.</p>
-        </div>
-
-        <div class="g4-workspace">
         {% for message in app.flashes('error') %}
             <p class="notification is-danger">{{ message }}</p>
         {% endfor %}
@@ -21,25 +12,38 @@
         {% endif %}
         {% for credentials in app.flashes('client_inbox_credentials') %}
             {% set link = path('app_client_inbox', {uuid: credentials.uuid}) %}
-            <div class="box g4-card mail4u-result">
+            <section class="box g4-card mail4u-result">
                 <h2 class="title is-5">Caixa criada</h2>
-                <p><strong>E-mail:</strong> {{ credentials.email }}</p>
-                <p><strong>Senha da caixa:</strong> <code>{{ credentials.password }}</code></p>
-                <p><strong>Link:</strong> <a data-client-inbox-link href="{{ link }}">{{ link }}</a></p>
-                <p>Guarde a senha agora. Ela só é exibida nesta tela após a criação.</p>
+                <dl>
+                    <div>
+                        <dt>E-mail</dt>
+                        <dd>{{ credentials.email }}</dd>
+                        <dd><button type="button" class="button is-small" data-copy="{{ credentials.email }}">Copiar e-mail</button></dd>
+                    </div>
+                    <div>
+                        <dt>Senha da caixa</dt>
+                        <dd><code>{{ credentials.password }}</code></dd>
+                        <dd><button type="button" class="button is-small" data-copy="{{ credentials.password }}">Copiar senha</button></dd>
+                    </div>
+                    <div>
+                        <dt>Link de acesso</dt>
+                        <dd><a data-client-inbox-link href="{{ link }}">{{ link }}</a></dd>
+                        <dd><button type="button" class="button is-small" data-copy-link>Copiar link</button></dd>
+                    </div>
+                </dl>
+                <p class="mt-4">Guarde a senha agora. Ela só é exibida nesta tela após a criação.</p>
                 {% if credentials.expiresAt is defined %}
                     <p>Recebe mensagens até {{ credentials.expiresAt }}.</p>
                 {% endif %}
                 <div class="buttons mt-4">
-                    <button type="button" class="button" data-copy="{{ credentials.email }}">Copiar e-mail</button>
                     <button type="button" class="button" data-copy="{{ 'E-mail: ' ~ credentials.email ~ "\nSenha: " ~ credentials.password ~ "\nLink: " ~ url('app_client_inbox', {uuid: credentials.uuid}) }}">Copiar dados de acesso</button>
                     <a class="button is-primary" href="{{ link }}">Abrir caixa</a>
                 </div>
-            </div>
+            </section>
         {% endfor %}
         <form method="post" class="box g4-card mail4u-create-form">
-            <h2 class="title is-4">Nova caixa de e-mail</h2>
-            <p class="mb-5">O endereço recebe mensagens por um ano.</p>
+            <h1 class="title">Nova caixa de e-mail</h1>
+            <p class="mb-5">Informe o nome do cliente. A caixa recebe mensagens por um ano.</p>
 
             <input type="hidden" name="_token" value="{{ csrf_token('create-client-inbox') }}">
             <div class="mail4u-create-fields">
@@ -54,16 +58,16 @@
             </div>
             <div class="mail4u-create-actions">
                 <button class="button is-primary">Criar caixa de e-mail</button>
-                <a class="button" href="{{ path('app_client_inbox_login') }}">Acessar uma caixa</a>
+                <a href="{{ path('app_client_inbox_login') }}">Acessar uma caixa existente</a>
             </div>
         </form>
-        </div>
     </div>
 </section>
 <script>
     document.querySelectorAll('[data-client-inbox-link]').forEach((link) => {
         link.textContent = link.href;
+        link.closest('.mail4u-result').querySelector('[data-copy-link]').dataset.copy = link.href;
     });
 </script>
-<script src="/brand/mail4u-inbox.js" defer></script>
+<script src="/brand/mail4u-inbox.js?v=3" defer></script>
 {% endblock %}

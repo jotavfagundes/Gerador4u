@@ -62,6 +62,30 @@ class ReceivedEmail
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $mailcowCopyAfter = null;
 
+    #[ORM\Column(length: 16, nullable: true)]
+    private ?string $mailcowCopyStatus = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $mailcowCopyAttemptedAt = null;
+
+    public function getMailcowCopyState(): string
+    {
+        return $this->mailcowCopyStatus ?? ($this->mailcowCopyAfter !== null ? 'queued' : 'unknown');
+    }
+
+    public function getMailcowCopyAttemptedAt(): ?\DateTimeImmutable
+    {
+        return $this->mailcowCopyAttemptedAt;
+    }
+
+    public function recordMailcowCopyResult(string $status): void
+    {
+        $this->mailcowCopyStatus = $status;
+        if ($status === 'accepted') {
+            $this->scheduleMailcowCopy(null);
+        }
+    }
+
     public function scheduleMailcowCopy(?\DateTimeImmutable $after): void
     {
         $this->mailcowCopyAfter = $after;

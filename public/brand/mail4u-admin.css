@@ -1,16 +1,16 @@
 .ea {
     --sidebar-bg: #4c0028;
-    --sidebar-menu-color: #fae4ed;
-    --sidebar-menu-icon-color: #f1bcd3;
-    --sidebar-menu-submenu-color: #efb8cf;
-    --sidebar-menu-active-item-bg: #781945;
+    --sidebar-menu-color: #f7f2ef;
+    --sidebar-menu-icon-color: #ded4ce;
+    --sidebar-menu-submenu-color: #eee5df;
+    --sidebar-menu-active-item-bg: #691331;
     --sidebar-menu-active-item-color: #fff;
-    --sidebar-menu-header-color: #f1bcd3;
+    --sidebar-menu-header-color: #ded4ce;
     --sidebar-menu-hover-color: #fff;
     --sidebar-item-hover-bg: #651039;
-    --sidebar-item-icon-tile-hover-bg: #842650;
+    --sidebar-item-icon-tile-hover-bg: #732342;
     --sidebar-border-color: #681439;
-    --body-bg: #faf6f8;
+    --body-bg: #f8f7f5;
     --content-top-bg: #fff;
 }
 
@@ -25,11 +25,11 @@
 }
 .mail4u-admin-logo-on-dark,
 .ea .ea-sidebar .mail4u-admin-logo-on-light { display: none; }
-.ea .ea-sidebar .mail4u-admin-logo-on-dark { display: block; }
+.ea .ea-sidebar .mail4u-admin-logo-on-dark { display: block; filter: grayscale(1); }
 .mail4u-admin-caption {
     display: block;
     margin: .45rem 0 .25rem;
-    color: #f4c7db;
+    color: #f3eeeb;
     font-size: .7rem;
     font-weight: 650;
     letter-spacing: .08em;
@@ -38,9 +38,9 @@
 .ea #responsive-header-logo .mail4u-admin-caption { display: none; }
 .ea .content-top, .ea .content-header { border-bottom: 1px solid var(--g4-line); }
 .ea .datagrid { background: #fff; border-radius: .85rem; }
-.ea .datagrid thead th { background: #f9eaf1; color: var(--g4-dark); }
-.ea .datagrid tbody tr:hover { background: #fcf4f8; }
-.ea :focus-visible { outline: 2px solid #a53868; outline-offset: 3px; }
+.ea .datagrid thead th { background: #efebe8; color: var(--g4-dark); }
+.ea .datagrid tbody tr:hover { background: #f8f7f5; }
+.ea :focus-visible { outline: 2px solid #660033; outline-offset: 3px; }
 
 .mail4u-dashboard { padding: 1.25rem 0 0; }
 .mail4u-dashboard-content { display: grid; gap: 1.25rem; }
@@ -51,11 +51,11 @@
     gap: 1rem;
     padding: clamp(1.15rem, 3vw, 2rem);
     border-radius: 1rem;
-    background: radial-gradient(circle at 94% 10%, #a83064, transparent 55%), linear-gradient(125deg, #4c0028, #780c43);
+    background: radial-gradient(circle at 94% 10%, #6e1737, transparent 55%), linear-gradient(125deg, #4c0028, #610b30);
     color: #fff;
 }
 .mail4u-admin-hero h2 { margin: 0 0 .35rem; font-size: clamp(1.35rem, 3vw, 2.1rem); font-weight: 750; color: #fff; }
-.mail4u-admin-hero p { margin: 0; color: #fae5ee; }
+.mail4u-admin-hero p { margin: 0; color: #f3eeeb; }
 .mail4u-admin-hero-icon {
     display: grid;
     place-items: center;
@@ -76,7 +76,7 @@
     border: 1px solid var(--g4-line);
     background: #fff;
 }
-.mail4u-dashboard .g4-stat:nth-child(even) { background: #fbecf3; }
+.mail4u-dashboard .g4-stat:nth-child(even) { background: #f5f2ef; }
 .mail4u-dashboard .g4-stat i {
     display: grid;
     place-items: center;
@@ -84,8 +84,8 @@
     width: 2.55rem;
     height: 2.55rem;
     border-radius: .7rem;
-    background: #f6dce9;
-    color: var(--g4-wine);
+    background: var(--g4-wine);
+    color: #fff;
 }
 .mail4u-dashboard .g4-stat strong { margin: 0; line-height: 1.1; }
 .mail4u-dashboard .g4-stat span { font-size: .85rem; }
@@ -99,10 +99,23 @@
 }
 .mail4u-admin-panel h2 { margin: 0; padding: 1rem 1.2rem; font-size: 1.08rem; font-weight: 700; color: var(--g4-dark); }
 .mail4u-admin-panel .table { margin: 0; --bs-table-bg: #fff; }
-.mail4u-admin-panel .table thead th { background: #fbecf3; color: var(--g4-dark); }
+.mail4u-admin-panel .table thead th { background: #f5f2ef; color: var(--g4-dark); }
 .mail4u-admin-panel .table th, .mail4u-admin-panel .table td { padding: .65rem 1.2rem; }
 .mail4u-admin-panel .table tbody tr:last-child td { border-bottom: 0; }
 
 @media (max-width: 460px) {
     .mail4u-admin-hero-icon { display: none; }
 }
+
+.mailcow-state {
+    display: inline-block;
+    padding: .2rem .45rem;
+    border-radius: .35rem;
+    background: var(--g4-subtle);
+    color: var(--g4-text);
+    font-size: .8rem;
+    font-weight: 650;
+}
+.mailcow-state-queued { background: var(--g4-wine); color: #fff; }
+.mailcow-state-accepted { background: #e6f2e9; color: #175932; }
+.mailcow-state-failed { background: #f5e9d2; color: #704400; }

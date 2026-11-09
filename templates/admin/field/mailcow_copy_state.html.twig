@@ -1,0 +1,8 @@
+{% set states = {
+    queued: ['Na fila', 'mailcow-state-queued'],
+    accepted: ['Aceita pelo Mailcow', 'mailcow-state-accepted'],
+    failed: ['Falhou · nova tentativa pendente', 'mailcow-state-failed'],
+    unknown: ['Sem registro', 'mailcow-state-unknown']
+} %}
+{% set state = states[field.value]|default(states.unknown) %}
+<span class="mailcow-state {{ state[1] }}">{{ state[0] }}</span>
