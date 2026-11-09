@@ -9,10 +9,13 @@
         </div>
     {% endfor %}
     <section class="section mail4u-dashboard">
-        <div class="container">
-            <div class="g4-intro">
-
-                <p>Acompanhe as caixas e o recebimento de mensagens.</p>
+        <div class="mail4u-dashboard-content">
+            <div class="mail4u-admin-hero">
+                <div>
+                    <h2>Operação do Mail4u</h2>
+                    <p>Acompanhe os domínios, as caixas e o recebimento de mensagens.</p>
+                </div>
+                <span class="mail4u-admin-hero-icon" aria-hidden="true"><i class="fas fa-envelope"></i></span>
             </div>
             <div class="g4-stats">
                 {% for label, value in {
@@ -25,8 +28,9 @@
                 {% endfor %}
             </div>
 
-            <h2 class="mb-3">Caixas recentes</h2>
-            <div class="table-responsive mb-4">
+            <section class="mail4u-admin-panel">
+            <h2>Caixas recentes</h2>
+            <div class="table-responsive">
                 <table class="table">
                     <thead><tr><th>E-mail</th><th>Status</th><th>Recebe até</th></tr></thead>
                     <tbody>
@@ -50,6 +54,7 @@
                     </tbody>
                 </table>
             </div>
+            </section>
 
             {% if activeDomainsCount == 0 %}
                 <div class="alert alert-danger" role="alert">
@@ -58,7 +63,10 @@
             {% endif %}
 
 
-            <table class="table is-striped is-hoverable is-fullwidth">
+            <section class="mail4u-admin-panel">
+            <h2>Atividade de recebimento</h2>
+            <div class="table-responsive">
+            <table class="table">
                 <thead>
                 <tr>
                     <th>Métrica</th>
@@ -104,9 +112,12 @@
                 </tr>
                 </tbody>
             </table>
+            </div>
+            </section>
 
             <div class="row mt-4">
-                <div class="col-md-6">
+                <div class="col-md-6 mb-3">
+                    <section class="mail4u-admin-panel">
                     <h2 class="title">5 países com mais e-mails recebidos</h2>
                     <table class="table is-striped is-hoverable is-fullwidth">
                         <thead>
@@ -130,9 +141,11 @@
                         {% endfor %}
                         </tbody>
                     </table>
+                    </section>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-6 mb-3">
+                    <section class="mail4u-admin-panel">
                     <h2 class="title">5 países com mais caixas criadas</h2>
                     <table class="table is-striped is-hoverable is-fullwidth">
                         <thead>
@@ -156,6 +169,7 @@
                         {% endfor %}
                         </tbody>
                     </table>
+                    </section>
                 </div>
             </div>
         </div>

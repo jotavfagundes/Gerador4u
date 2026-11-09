@@ -7,11 +7,11 @@
 {% endblock %}
 
 {% block body %}
-<section class="section g4-main{% if unlocked %} mailbox-workspace{% endif %}">
+<section class="section g4-main{% if unlocked %} mailbox-workspace{% else %} mail4u-auth{% endif %}">
     <div class="container">
-        {% if not unlocked %}<h1 class="title">Caixa de entrada</h1>{% endif %}
         {% if not unlocked %}
-            <form method="post" class="box" style="max-width: 30rem">
+            <form method="post" class="box g4-card" style="max-width: 30rem; margin-inline: auto">
+                <h1 class="title is-4">Abrir caixa de entrada</h1>
                 <input type="hidden" name="_token" value="{{ csrf_token('client-inbox-' ~ box.uuid) }}">
                 {% if error is defined %}
                     <p class="notification is-danger">{{ error }}</p>

@@ -2,8 +2,9 @@
     <div class="g4-bar">
         <a href="/" aria-label="Início do Mail4u"><img src="/brand/mail4u-logo-original.png" alt="Mail4u" width="150"></a>
         <nav aria-label="Navegação principal">
-            <a href="/">Início</a>
-            <a href="{{ path('app_client_inbox_login') }}">Login</a>
+            {% set currentRoute = app.request.attributes.get('_route') %}
+            <a href="/"{% if currentRoute in ['app_home', 'app_client_inboxes'] %} aria-current="page"{% endif %}>Início</a>
+            <a href="{{ path('app_client_inbox_login') }}"{% if currentRoute in ['app_client_inbox_login', 'app_client_inbox'] %} aria-current="page"{% endif %}>Acessar caixa</a>
             <a href="{{ path('admin') }}">Administração</a>
             {% if app.user %}<a href="{{ path('app_logout') }}">Sair</a>{% endif %}
         </nav>

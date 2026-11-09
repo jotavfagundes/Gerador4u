@@ -5,6 +5,9 @@
 <section class="mail4u-home">
     <div class="mail4u-home-layout">
         <div class="g4-intro">
+            <span class="mail4u-home-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg>
+            </span>
             <h1 class="title">Crie uma caixa<br>para seu cliente</h1>
             <p>Informe o nome do cliente para gerar um endereço de e-mail exclusivo.</p>
         </div>
@@ -34,7 +37,9 @@
                 </div>
             </div>
         {% endfor %}
-        <form method="post" class="box g4-card mail4u-create-form"><h2 class="title is-5">Nova caixa de e-mail</h2><p class="mb-5">Preencha os dados do cliente para criar a caixa.</p>
+        <form method="post" class="box g4-card mail4u-create-form">
+            <h2 class="title is-4">Nova caixa de e-mail</h2>
+            <p class="mb-5">O endereço recebe mensagens por um ano.</p>
 
             <input type="hidden" name="_token" value="{{ csrf_token('create-client-inbox') }}">
             <div class="mail4u-create-fields">

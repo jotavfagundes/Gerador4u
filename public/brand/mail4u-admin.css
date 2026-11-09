@@ -1,67 +1,109 @@
-.mail4u-admin-logo {
-    display: block;
-    width: 136px;
-    max-width: 100%;
-    height: auto;
+.ea {
+    --sidebar-bg: #4c0028;
+    --sidebar-menu-color: #fae4ed;
+    --sidebar-menu-icon-color: #f1bcd3;
+    --sidebar-menu-submenu-color: #efb8cf;
+    --sidebar-menu-active-item-bg: #781945;
+    --sidebar-menu-active-item-color: #fff;
+    --sidebar-menu-header-color: #f1bcd3;
+    --sidebar-menu-hover-color: #fff;
+    --sidebar-item-hover-bg: #651039;
+    --sidebar-item-icon-tile-hover-bg: #842650;
+    --sidebar-border-color: #681439;
+    --body-bg: #faf6f8;
+    --content-top-bg: #fff;
 }
 
+.ea .sidebar-wrapper, .ea .ea-sidebar { background: #4c0028; }
+.ea .ea-sidebar-item-link { border-radius: .55rem; }
+
+.mail4u-admin-logo {
+    display: block;
+    box-sizing: border-box;
+    width: 146px;
+    max-width: 100%;
+    height: auto;
+    padding: .35rem .5rem;
+    border-radius: .6rem;
+    background: #fff;
+}
 .mail4u-admin-caption {
     display: block;
-    margin: .2rem 0 .45rem;
-    color: var(--g4-muted);
+    margin: .45rem 0 .25rem;
+    color: #f4c7db;
     font-size: .7rem;
     font-weight: 650;
     letter-spacing: .08em;
     text-transform: uppercase;
 }
+.ea #responsive-header-logo .mail4u-admin-caption { display: none; }
+.ea .content-top, .ea .content-header { border-bottom: 1px solid var(--g4-line); }
+.ea .datagrid { background: #fff; border-radius: .85rem; }
+.ea .datagrid thead th { background: #f9eaf1; color: var(--g4-dark); }
+.ea .datagrid tbody tr:hover { background: #fcf4f8; }
+.ea :focus-visible { outline: 2px solid #a53868; outline-offset: 3px; }
 
-.sidebar-menu .menu-item > a {
-    border-radius: .5rem;
+.mail4u-dashboard { padding: 1.25rem 0 0; }
+.mail4u-dashboard-content { display: grid; gap: 1.25rem; }
+.mail4u-admin-hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: clamp(1.15rem, 3vw, 2rem);
+    border-radius: 1rem;
+    background: radial-gradient(circle at 94% 10%, #a83064, transparent 55%), linear-gradient(125deg, #4c0028, #780c43);
+    color: #fff;
 }
-
-.sidebar-menu .menu-item > a:hover {
-    background: var(--g4-rose);
-    color: var(--g4-dark);
+.mail4u-admin-hero h2 { margin: 0 0 .35rem; font-size: clamp(1.35rem, 3vw, 2.1rem); font-weight: 750; color: #fff; }
+.mail4u-admin-hero p { margin: 0; color: #fae5ee; }
+.mail4u-admin-hero-icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 3rem;
+    height: 3rem;
+    border: 1px solid #ffffff45;
+    border-radius: .8rem;
+    background: #ffffff18;
+    font-size: 1.3rem;
 }
-
-.content-header {
-    border-bottom: 1px solid var(--g4-line);
-}
-
-.datagrid,
-.mail4u-dashboard .table {
-    background: #fff;
+.mail4u-dashboard .g4-stats { margin: 0; }
+.mail4u-dashboard .g4-stat {
+    display: flex;
+    gap: .85rem;
+    align-items: center;
+    padding: 1rem;
     border: 1px solid var(--g4-line);
-    border-radius: .75rem;
-    border-collapse: separate;
-    border-spacing: 0;
-    box-shadow: 0 3px 12px #46002208;
+    background: #fff;
 }
-
-.datagrid thead th,
-.mail4u-dashboard .table thead th {
-    background: #fcf4f7;
-    color: var(--g4-dark);
+.mail4u-dashboard .g4-stat:nth-child(even) { background: #fbecf3; }
+.mail4u-dashboard .g4-stat i {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 2.55rem;
+    height: 2.55rem;
+    border-radius: .7rem;
+    background: #f6dce9;
+    color: var(--g4-wine);
 }
+.mail4u-dashboard .g4-stat strong { margin: 0; line-height: 1.1; }
+.mail4u-dashboard .g4-stat span { font-size: .85rem; }
 
-.mail4u-dashboard .g4-intro {
-    padding: 1.25rem;
+.mail4u-admin-panel {
+    overflow: hidden;
     border: 1px solid var(--g4-line);
     border-radius: 1rem;
-    background: linear-gradient(115deg, #fff, var(--g4-rose));
+    background: #fff;
+    box-shadow: 0 6px 22px #46002208;
 }
+.mail4u-admin-panel h2 { margin: 0; padding: 1rem 1.2rem; font-size: 1.08rem; font-weight: 700; color: var(--g4-dark); }
+.mail4u-admin-panel .table { margin: 0; --bs-table-bg: #fff; }
+.mail4u-admin-panel .table thead th { background: #fbecf3; color: var(--g4-dark); }
+.mail4u-admin-panel .table th, .mail4u-admin-panel .table td { padding: .65rem 1.2rem; }
+.mail4u-admin-panel .table tbody tr:last-child td { border-bottom: 0; }
 
-.mail4u-dashboard .g4-intro p {
-    margin: .65rem 0 0;
+@media (max-width: 460px) {
+    .mail4u-admin-hero-icon { display: none; }
 }
-
-.mail4u-dashboard h2 {
-    color: var(--g4-dark);
-    font-size: 1.1rem;
-}
-
-.mail4u-dashboard .g4-intro { background: #fff; }
-.mail4u-dashboard .g4-stat { display: flex; gap: .85rem; align-items: center; border-top-width: 1px; }
-.mail4u-dashboard .g4-stat i { color: var(--g4-wine); font-size: 1.25rem; }
-.mail4u-dashboard .g4-stat strong { margin: 0; line-height: 1.15; }
-.mail4u-dashboard .g4-stat span { font-size: .85rem; }

@@ -61,8 +61,8 @@ class DashboardController extends AbstractDashboardController
     public function configureAssets(): Assets
     {
         return Assets::new()
-            ->addCssFile('/brand/mail4u.css?v=3')
-            ->addCssFile('/brand/mail4u-admin.css?v=3')
+            ->addCssFile('/brand/mail4u.css?v=5')
+            ->addCssFile('/brand/mail4u-admin.css?v=4')
             ->addJsFile('/brand/mail4u-inbox.js?v=2');
     }
 

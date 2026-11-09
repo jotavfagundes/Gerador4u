@@ -204,3 +204,109 @@ body { background: var(--g4-bg); color: var(--g4-text); min-height: 100vh; }
 @media (max-width: 760px) {
     .mail4u-home-layout { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* Shared Mail4u surfaces */
+.mail4u-site {
+    display: flex;
+    flex-direction: column;
+    background: #fbf8fa;
+}
+.mail4u-site > .g4-footer { margin-top: auto; background: #fff; }
+.mail4u-site .g4-header { border-top: 4px solid var(--g4-wine); }
+.mail4u-site .g4-bar { max-width: 1320px; }
+.mail4u-site .g4-bar nav { gap: .3rem; flex-wrap: wrap; }
+.mail4u-site .g4-bar nav a { padding: .5rem .8rem; border-radius: .6rem; }
+.mail4u-site .g4-bar nav a:hover,
+.mail4u-site .g4-bar nav a[aria-current="page"] { background: var(--g4-rose); }
+.mail4u-site :focus-visible { outline: 2px solid #a53868; outline-offset: 3px; }
+
+.mail4u-site .mail4u-home {
+    background: radial-gradient(ellipse at 95% 0%, #f6dce7, #fbf8fa 58%);
+    padding-block: clamp(1.5rem, 5vw, 4.5rem);
+}
+.mail4u-site .mail4u-home-layout {
+    align-items: stretch;
+    gap: 0;
+    border: 1px solid var(--g4-line);
+    border-radius: 1.5rem;
+    background: #fff;
+    box-shadow: 0 18px 60px #46002212;
+}
+.mail4u-site .mail4u-home .g4-intro {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: .6rem;
+    padding: clamp(1.6rem, 5vw, 4rem);
+    border-radius: 1.45rem 0 0 1.45rem;
+    background: radial-gradient(circle at 90% 10%, #a33065, transparent 62%), linear-gradient(140deg, #4c0028, #690337);
+}
+.mail4u-site .mail4u-home .g4-intro h1 { color: #fff; }
+.mail4u-site .mail4u-home .g4-intro p { color: #fae5ee; }
+.mail4u-home-icon {
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    margin-bottom: .8rem;
+    border: 1px solid #ffffff42;
+    border-radius: .9rem;
+    background: #ffffff18;
+    color: #fff;
+}
+.mail4u-home-icon svg { width: 1.6rem; }
+.mail4u-site .mail4u-home .g4-workspace { padding: clamp(1.25rem, 4vw, 3.5rem); }
+.mail4u-site .mail4u-home .mail4u-create-form { padding: 0; border: 0; box-shadow: none; }
+.mail4u-site .mail4u-create-actions > .button { border-radius: .65rem; }
+.mail4u-site .mail4u-create-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+.mail4u-site .mail4u-auth .g4-card {
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    border-top: 4px solid var(--g4-wine);
+    box-shadow: 0 16px 44px #46002212;
+}
+.mail4u-site .mail4u-auth {
+    width: 100%;
+    background: radial-gradient(ellipse at top, #f7e1ea, transparent 66%);
+}
+
+.mail4u-site .mailbox-workspace.g4-main {
+    width: 100%;
+    max-width: none;
+}
+.mail4u-site .mailbox-workspace .mailbox-header {
+    background: linear-gradient(110deg, #52002b, #7e184b);
+    padding-block: 1rem;
+}
+.mail4u-site .mailbox-header .title { color: #fff; }
+.mail4u-site .mailbox-header p { color: #fae5ee; }
+.mail4u-site .mailbox-header .button { background: #fff; color: var(--g4-wine); }
+.mail4u-site .mailbox-header .button:hover { background: var(--g4-rose); }
+.mail4u-site .mailbox-sidebar { background: #f8ebf1; }
+.mail4u-site .mailbox-folder { background: #eed1df; }
+.mail4u-site .mailbox-reader { background: #fffcfd; }
+
+@media (max-width: 760px) {
+    .mail4u-site .mail4u-home .g4-intro { border-radius: 1.45rem 1.45rem 0 0; }
+    .mail4u-site .g4-bar { padding: .8rem 1rem; gap: .55rem; }
+    .mail4u-site .g4-bar nav a { padding: .4rem .55rem; }
+}
+@media (max-width: 420px) {
+    .mail4u-site .mail4u-create-fields { grid-template-columns: 1fr; }
+}
+
+.mail4u-site .mail4u-auth .g4-card {
+    max-width: 30rem;
+    margin-inline: auto;
+}
+
+.mail4u-site .button.is-primary {
+    background: var(--g4-wine);
+    border-color: var(--g4-wine);
+    color: #fff;
+}
+.mail4u-site .button.is-primary:hover {
+    background: var(--g4-dark);
+    border-color: var(--g4-dark);
+}
