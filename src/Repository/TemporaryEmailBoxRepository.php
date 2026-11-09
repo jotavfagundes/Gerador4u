@@ -26,6 +26,18 @@ class TemporaryEmailBoxRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /** @return list<TemporaryEmailBox> */
+    public function findDueMailcowProvisions(\DateTimeImmutable $now): array
+    {
+        return $this->createQueryBuilder('t')
+            ->where('t.mailcowProvisionAfter <= :now AND t.expiresAt > :now')
+            ->setParameter('now', $now)
+            ->orderBy('t.mailcowProvisionAfter', 'ASC')
+            ->setMaxResults(20)
+            ->getQuery()
+            ->getResult();
+    }
+
     /**
      * @return list<array{countryCode: string, emailBoxCount: int|string}>
      */

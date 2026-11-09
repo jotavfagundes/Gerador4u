@@ -1,0 +1,10 @@
+#!/bin/sh
+
+if [ -z "$MAILCOW_PROVISION_DOMAINS" ] || [ -z "$MAILCOW_API_URL" ] || [ -z "$MAILCOW_API_KEY" ]; then
+    exit 0
+fi
+
+while true; do
+    php /app/bin/console app:provision-mailcow-mailboxes
+    sleep 60
+done

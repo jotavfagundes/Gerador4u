@@ -8,6 +8,7 @@ use App\Repository\TemporaryEmailBoxRepository;
 use App\Service\Client\ClientIpRetriever;
 use App\Service\Factory\TemporaryEmailBoxFactory;
 use App\Service\Handler\ReceivedEmail\ReceivedEmailsFetcher;
+use App\Service\Mailcow\MailboxProvisioner;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -75,6 +76,7 @@ final class ClientInboxController extends AbstractController
         ClientIpRetriever $clientIp,
         SluggerInterface $slugger,
         EntityManagerInterface $entityManager,
+        MailboxProvisioner $mailcow,
     ): Response {
         if ($request->isMethod('GET')) {
             $response = $this->render('client_inbox/manage.html.twig');
@@ -109,6 +111,9 @@ final class ClientInboxController extends AbstractController
         $password = $this->generateAccessPassword();
         $box = $factory->create($email, $clientIp->getClientIp($request), null);
         $box->protectForClient(password_hash($password, PASSWORD_DEFAULT));
+        if ($mailcow->supports($email)) {
+            $box->scheduleMailcowProvision(new \DateTimeImmutable());
+        }
         $entityManager->persist($box);
 
         try {

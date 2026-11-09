@@ -49,6 +49,14 @@ class TemporaryEmailBox
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $expiresAt = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $mailcowProvisionAfter = null;
+
+    public function scheduleMailcowProvision(?\DateTimeImmutable $after): void
+    {
+        $this->mailcowProvisionAfter = $after;
+    }
+
     public function protectForClient(string $passwordHash): void
     {
         $this->accessPasswordHash = $passwordHash;
