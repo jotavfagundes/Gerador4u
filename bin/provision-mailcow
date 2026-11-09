@@ -1,10 +1,15 @@
 #!/bin/sh
 
-if [ -z "$MAILCOW_PROVISION_DOMAINS" ] || [ -z "$MAILCOW_API_URL" ] || [ -z "$MAILCOW_API_KEY" ]; then
+if [ -z "$MAILCOW_PROVISION_DOMAINS" ] && [ -z "$MAILCOW_COPY_TARGETS" ]; then
     exit 0
 fi
 
 while true; do
-    php /app/bin/console app:provision-mailcow-mailboxes
+    if [ -n "$MAILCOW_PROVISION_DOMAINS" ] && [ -n "$MAILCOW_API_URL" ] && [ -n "$MAILCOW_API_KEY" ]; then
+        php /app/bin/console app:provision-mailcow-mailboxes
+    fi
+    if [ -n "$MAILCOW_COPY_TARGETS" ] && [ -n "$MAILCOW_SMTP_URL" ] && [ -n "$MAILCOW_SMTP_USER" ] && [ -n "$MAILCOW_SMTP_PASSWORD" ]; then
+        php /app/bin/console app:copy-mailcow-messages
+    fi
     sleep 60
 done

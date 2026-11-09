@@ -26,6 +26,31 @@ class ReceivedEmailRepository extends ServiceEntityRepository
             ->execute();
     }
 
+    /** @return list<ReceivedEmail> */
+    public function findDueMailcowCopies(\DateTimeImmutable $now): array
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.mailcowCopyAfter <= :now')
+            ->setParameter('now', $now)
+            ->orderBy('r.mailcowCopyAfter', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function claimMailcowCopy(int $id, \DateTimeImmutable $now): bool
+    {
+        return 1 === $this->createQueryBuilder('r')
+            ->update()
+            ->set('r.mailcowCopyAfter', ':retry')
+            ->where('r.id = :id AND r.mailcowCopyAfter <= :now')
+            ->setParameter('id', $id)
+            ->setParameter('now', $now)
+            ->setParameter('retry', $now->modify('+15 minutes'))
+            ->getQuery()
+            ->execute();
+    }
+
     public function countWithTemporaryEmailBox(): int
     {
         return $this->createQueryBuilder('r')

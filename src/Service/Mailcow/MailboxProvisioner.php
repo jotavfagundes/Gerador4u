@@ -62,4 +62,30 @@ final class MailboxProvisioner
 
         throw new \RuntimeException('Mailcow did not confirm mailbox provisioning.');
     }
+
+    public function hasActiveMailbox(string $email): bool
+    {
+        if (!str_starts_with($this->url ?? '', 'https://') || !$this->apiKey) {
+            return false;
+        }
+
+        $response = $this->httpClient->request(
+            'GET',
+            rtrim($this->url, '/') . '/api/v1/get/mailbox/' . rawurlencode($email),
+            [
+                'headers' => ['X-API-Key' => $this->apiKey],
+                'max_redirects' => 0,
+                'max_duration' => 5,
+            ],
+        )->toArray();
+
+        foreach (array_is_list($response) ? $response : [$response] as $mailbox) {
+            if (strcasecmp($mailbox['username'] ?? '', $email) === 0
+                && in_array($mailbox['active'] ?? null, [true, 1, '1'], true)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

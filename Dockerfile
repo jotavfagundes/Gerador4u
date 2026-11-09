@@ -29,6 +29,7 @@ RUN set -eux; \
 	install-php-extensions \
 		@composer \
 		apcu \
+		curl \
 		intl \
         pdo_mysql \
 		opcache \

@@ -59,6 +59,14 @@ class ReceivedEmail
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $subjectReadAt = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $mailcowCopyAfter = null;
+
+    public function scheduleMailcowCopy(?\DateTimeImmutable $after): void
+    {
+        $this->mailcowCopyAfter = $after;
+    }
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
