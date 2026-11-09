@@ -19,14 +19,13 @@
 
 .mail4u-admin-logo {
     display: block;
-    box-sizing: border-box;
     width: 146px;
     max-width: 100%;
     height: auto;
-    padding: .35rem .5rem;
-    border-radius: .6rem;
-    background: #fff;
 }
+.mail4u-admin-logo-on-dark,
+.ea .ea-sidebar .mail4u-admin-logo-on-light { display: none; }
+.ea .ea-sidebar .mail4u-admin-logo-on-dark { display: block; }
 .mail4u-admin-caption {
     display: block;
     margin: .45rem 0 .25rem;

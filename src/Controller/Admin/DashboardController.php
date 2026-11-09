@@ -55,14 +55,18 @@ class DashboardController extends AbstractDashboardController
             ->disableDarkMode()
             ->setFaviconPath('brand/mail4u-favicon-final.ico')
             ->generateRelativeUrls()
-            ->setTitle('<img class="mail4u-admin-logo" src="/brand/mail4u-logo-original.png" alt="Mail4u"><span class="mail4u-admin-caption">Administração</span>');
+            ->setTitle(
+                '<img class="mail4u-admin-logo mail4u-admin-logo-on-light" src="/brand/mail4u-logo-original.png" alt="Mail4u">'
+                . '<img class="mail4u-admin-logo mail4u-admin-logo-on-dark" src="/brand/mail4u-logo-branco.png" alt="Mail4u">'
+                . '<span class="mail4u-admin-caption">Administração</span>'
+            );
     }
 
     public function configureAssets(): Assets
     {
         return Assets::new()
             ->addCssFile('/brand/mail4u.css?v=5')
-            ->addCssFile('/brand/mail4u-admin.css?v=4')
+            ->addCssFile('/brand/mail4u-admin.css?v=5')
             ->addJsFile('/brand/mail4u-inbox.js?v=2');
     }
 
