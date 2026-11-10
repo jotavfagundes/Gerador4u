@@ -119,3 +119,13 @@
 .mailcow-state-queued { background: var(--g4-wine); color: #fff; }
 .mailcow-state-accepted { background: #e6f2e9; color: #175932; }
 .mailcow-state-failed { background: #f5e9d2; color: #704400; }
+
+.mail4u-domain-generation {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    white-space: nowrap;
+}
+.mail4u-domain-generation-on { display: none; }
+.mail4u-domain-generation:has(input:checked) .mail4u-domain-generation-on { display: inline; }
+.mail4u-domain-generation:has(input:checked) .mail4u-domain-generation-off { display: none; }

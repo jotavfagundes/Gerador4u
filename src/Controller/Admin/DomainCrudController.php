@@ -35,7 +35,10 @@ class DomainCrudController extends AbstractCrudController
                 }),
             DateTimeField::new('activeUntil', 'Ativo até')
                 ->setFormTypeOption('view_timezone', $this->displayTimezone),
-            BooleanField::new('premium', 'Premium'),
+            BooleanField::new('automaticGenerationEnabled', 'Geração automática')
+                ->setSortable(false)
+                ->setHelp('Permite gerar novas caixas com este domínio enquanto ele estiver dentro do prazo de validade.')
+                ->setTemplatePath('admin/field/domain_generation.html.twig'),
         ];
     }
 }

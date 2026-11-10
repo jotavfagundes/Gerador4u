@@ -68,6 +68,16 @@ class Domain
         return $this;
     }
 
+    public function isAutomaticGenerationEnabled(): bool
+    {
+        return !$this->premium;
+    }
+
+    public function setAutomaticGenerationEnabled(bool $enabled): static
+    {
+        return $this->setPremium(!$enabled);
+    }
+
     public function getEmailCount(): string
     {
         // Required so EasyAdmin could override it.

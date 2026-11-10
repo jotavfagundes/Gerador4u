@@ -1,0 +1,9 @@
+{% if ea().crud.currentAction == 'detail' %}
+    {{ field.value ? 'Ativado' : 'Desativado' }}
+{% else %}
+    <div class="mail4u-domain-generation">
+        {{ include('@EasyAdmin/crud/field/boolean.html.twig') }}
+        <span class="mail4u-domain-generation-on" aria-hidden="true">Ativado</span>
+        <span class="mail4u-domain-generation-off" aria-hidden="true">Desativado</span>
+    </div>
+{% endif %}
