@@ -41,7 +41,6 @@ class ReceivedEmailCrudController extends AbstractCrudController
             DateTimeField::new('mailcowCopyAttemptedAt', 'Última tentativa da cópia')->hideOnForm(),
             DateTimeField::new('readAt', 'Lido em'),
             DateTimeField::new('subjectReadAt', 'Assunto lido em'),
-            TextField::new('html', 'HTML')->hideOnIndex(),
             TextField::new('metadataString', 'Metadados')->hideOnIndex(),
         ];
     }
@@ -49,6 +48,8 @@ class ReceivedEmailCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
+            ->overrideTemplate('crud/detail', 'admin/received_email/detail.html.twig')
+            ->setPageTitle(Crud::PAGE_DETAIL, 'E-mail recebido')
             ->setDefaultSort(['createdAt' => 'DESC']);
     }
 
@@ -60,18 +61,19 @@ class ReceivedEmailCrudController extends AbstractCrudController
 
     public function configureActions(Actions $actions): Actions
     {
-        $viewHtml = Action::new('viewHtml', 'Ver HTML', 'fas fa-file-alt')
+        $viewHtml = Action::new('viewHtml', 'Abrir em nova aba', 'fas fa-external-link-alt')
             ->linkToUrl(function ($entity) {
                 return $this->generateUrl('admin_received_email_view_html', [
                     'id' => $entity->getId(),
                 ]);
             })
-            ->setHtmlAttributes(['target' => '_blank']);
+            ->setHtmlAttributes(['target' => '_blank', 'rel' => 'noopener noreferrer']);
 
         return $actions
             ->disable(Action::NEW, Action::EDIT)
             ->add(Crud::PAGE_INDEX, $viewHtml)
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
+            ->update(Crud::PAGE_INDEX, Action::DETAIL, static fn (Action $action): Action => $action->setLabel('Ver e-mail'))
         ;
     }
 
@@ -80,6 +82,7 @@ class ReceivedEmailCrudController extends AbstractCrudController
     {
         return $this->render('email_box/view.html.twig', [
             'html' => $email->getHtml(),
+            'text' => $email->getMetadata()['text'] ?? null,
         ], new Response(headers: ['Cache-Control' => 'private, no-store', 'Referrer-Policy' => 'no-referrer']));
     }
 }

@@ -126,6 +126,7 @@ final class EmailBoxController extends AbstractController
 
         return $this->render('email_box/view.html.twig', [
             'html' => $receivedEmail->getHtml(),
+            'text' => $receivedEmail->getMetadata()['text'] ?? null,
         ], new Response(headers: ['Cache-Control' => 'private, no-store', 'Referrer-Policy' => 'no-referrer']));
     }
 }

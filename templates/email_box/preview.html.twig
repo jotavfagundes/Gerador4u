@@ -1,3 +1,9 @@
-<iframe title="Conteúdo do e-mail" sandbox="allow-popups allow-popups-to-escape-sandbox"
-        referrerpolicy="no-referrer" style="{{ frameStyle }}"
-        srcdoc="{{ ('<meta http-equiv="Content-Security-Policy" content="default-src &apos;none&apos;; style-src &apos;unsafe-inline&apos;"><meta name="referrer" content="no-referrer"><base target="_blank">' ~ (html ?? ''))|e('html_attr') }}"></iframe>
+{% if html|default('')|trim is not empty %}
+    <iframe title="Conteúdo do e-mail" sandbox="allow-popups allow-popups-to-escape-sandbox"
+            referrerpolicy="no-referrer" style="{{ frameStyle }}"
+            srcdoc="{{ ('<meta http-equiv="Content-Security-Policy" content="default-src &apos;none&apos;; style-src &apos;unsafe-inline&apos;"><meta name="referrer" content="no-referrer"><base target="_blank">' ~ html)|e('html_attr') }}"></iframe>
+{% elseif text is defined and text is not iterable and text|default('')|trim is not empty %}
+    <pre style="padding: 1rem; white-space: pre-wrap; overflow-wrap: anywhere; font: inherit">{{ text }}</pre>
+{% else %}
+    <p style="padding: 1rem">Mensagem sem conteúdo.</p>
+{% endif %}

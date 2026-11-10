@@ -96,7 +96,7 @@
                     {% if fastIt %}
                         <div data-fast-it="{{ text }}" data-fast-it-subject="{{ email.subject ?? '' }}"></div>
                     {% endif %}
-                    {% include 'email_box/preview.html.twig' with {html: email.html, frameStyle: 'width: 100%; min-height: 18rem; margin-top: .75rem'} only %}
+                    {% include 'email_box/preview.html.twig' with {html: email.html, text: email.metadata.text ?? null, frameStyle: 'width: 100%; min-height: 18rem; margin-top: .75rem'} only %}
                     </div>
                 </details>
             {% else %}
