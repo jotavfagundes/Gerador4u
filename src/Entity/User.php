@@ -18,7 +18,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public const ROLE_USER = 'ROLE_USER';
     public const ROLE_ADMIN = 'ROLE_ADMIN';
     public const ROLE_PREMIUM = 'ROLE_PREMIUM';
-    public const TEAM_EMAIL_DOMAIN = 'cidadania4u.com.br';
 
     public const ROLES = [self::ROLE_USER, self::ROLE_ADMIN, self::ROLE_PREMIUM];
 
@@ -86,13 +85,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getEmail(): ?string
     {
         return $this->email;
-    }
-
-    public static function isTeamEmail(string $email): bool
-    {
-        return strlen($email) <= 180
-            && filter_var($email, FILTER_VALIDATE_EMAIL) !== false
-            && str_ends_with(strtolower($email), '@' . self::TEAM_EMAIL_DOMAIN);
     }
 
     public function setEmail(string $email): static
@@ -172,7 +164,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $data = (array) $this;
         unset($data["\0".self::class."\0profilePhoto"]);
-        $data["\0".self::class."\0temporaryEmailBoxes"] = new ArrayCollection();
         $data["\0".self::class."\0password"] = hash('crc32c', $this->password);
 
         return $data;
