@@ -3,9 +3,11 @@
 namespace App\Service\Handler\ReceivedEmail;
 
 use App\DTO\Request\CreateEmailRequestDto;
+use App\Entity\N8nEmailDelivery;
 use App\Entity\ReceivedEmail;
 use App\Service\Factory\ReceivedEmailFactory;
 use App\Service\Mailcow\MessageCopier;
+use App\Service\N8nEmailWebhook;
 use App\Service\Realtime\ReceivedEmailRealtimeNotifier;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -16,6 +18,7 @@ class CreateReceivedEmailHandler
         private EntityManagerInterface $entityManager,
         private ReceivedEmailRealtimeNotifier $receivedEmailRealtimeNotifier,
         private MessageCopier $mailcow,
+        private N8nEmailWebhook $n8n,
     ) {
     }
 
@@ -27,6 +30,9 @@ class CreateReceivedEmailHandler
         }
 
         $this->entityManager->persist($receivedEmail);
+        if ($this->n8n->isConfigured()) {
+            $this->entityManager->persist(new N8nEmailDelivery($receivedEmail));
+        }
         $this->entityManager->flush();
 
         $this->receivedEmailRealtimeNotifier->notify($receivedEmail);
