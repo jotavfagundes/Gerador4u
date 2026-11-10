@@ -78,8 +78,8 @@ class ReceivedEmailCrudController extends AbstractCrudController
     #[Route('/admin/received-email/{id}/view-html', name: 'admin_received_email_view_html')]
     public function viewHtml(ReceivedEmail $email): Response
     {
-        return $this->render('admin/received_email/view_html.html.twig', [
-            'html' => $email->getHtml()
-        ]);
+        return $this->render('email_box/view.html.twig', [
+            'html' => $email->getHtml(),
+        ], new Response(headers: ['Cache-Control' => 'private, no-store', 'Referrer-Policy' => 'no-referrer']));
     }
 }

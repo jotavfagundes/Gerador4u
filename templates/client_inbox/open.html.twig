@@ -96,8 +96,7 @@
                     {% if fastIt %}
                         <div data-fast-it="{{ text }}" data-fast-it-subject="{{ email.subject ?? '' }}"></div>
                     {% endif %}
-                    <iframe class="mt-3" title="Conteúdo do e-mail" sandbox="allow-popups allow-popups-to-escape-sandbox" style="width: 100%; min-height: 18rem"
-                            srcdoc="{{ ('<meta http-equiv="Content-Security-Policy" content="default-src &apos;none&apos;; style-src &apos;unsafe-inline&apos;"><meta name="referrer" content="no-referrer"><base target="_blank">' ~ (email.html ?? ''))|e('html_attr') }}"></iframe>
+                    {% include 'email_box/preview.html.twig' with {html: email.html, frameStyle: 'width: 100%; min-height: 18rem; margin-top: .75rem'} only %}
                     </div>
                 </details>
             {% else %}

@@ -19,9 +19,12 @@ use App\Service\Handler\TemporaryEmailBox\CreateEmailBoxHandler;
 use App\Service\Handler\TemporaryEmailBox\TemporaryEmailBoxFetcher;
 use App\Service\Handler\TemporaryEmailBox\TemporaryEmailBoxUpdater;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
+use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Uid\Uuid;
 
@@ -37,6 +40,8 @@ final class EmailBoxController extends AbstractController
         private TemporaryEmailBoxUpdater $temporaryEmailBoxUpdater,
         private CloudflareCountryRetriever $cloudflareCountryRetriever,
         private ChosenDomainResolver $chosenDomainResolver,
+        #[Autowire(service: 'limiter.mailbox_creation')]
+        private readonly RateLimiterFactoryInterface $creationLimiter,
     ) {
     }
 
@@ -47,6 +52,12 @@ final class EmailBoxController extends AbstractController
     ): Response
     {
         $creatorIp = $this->clientIpRetriever->getClientIp($request);
+        $limit = $this->creationLimiter->create($creatorIp)->consume();
+        if (!$limit->isAccepted()) {
+            throw new TooManyRequestsHttpException(
+                max(1, $limit->getRetryAfter()->getTimestamp() - time()),
+            );
+        }
         $countryCode = $this->cloudflareCountryRetriever->getCountryCode($request);
 
         $domain = $createEmailBoxRequestDto?->domain !== null
@@ -114,7 +125,7 @@ final class EmailBoxController extends AbstractController
         $receivedEmail = $this->receivedEmailsFetcher->findOneByTemporaryEmailBoxUuidAndReceivedEmailUuid($emailBoxUuid, $emailUuid);
 
         return $this->render('email_box/view.html.twig', [
-            'receivedEmail' => $receivedEmail,
-        ]);
+            'html' => $receivedEmail->getHtml(),
+        ], new Response(headers: ['Cache-Control' => 'private, no-store', 'Referrer-Policy' => 'no-referrer']));
     }
 }

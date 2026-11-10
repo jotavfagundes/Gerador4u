@@ -33,7 +33,6 @@ class UserCrudController extends AbstractCrudController
                     new Image(maxSize: '512k', mimeTypes: ['image/jpeg', 'image/png', 'image/webp']),
                 ]),
             TextField::new('newPassword', 'Nova senha')->hideOnIndex(),
-            TextField::new('password', 'Senha')->setDisabled()->hideOnIndex(),
             ChoiceField::new('roles', 'Perfis de acesso')
                 ->setChoices(array_combine(User::ROLES, User::ROLES))
                 ->allowMultipleChoices()

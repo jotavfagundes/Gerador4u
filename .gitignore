@@ -1,6 +1,9 @@
 .idea
 .DS_Store
-/sqlite/data.db
+/sqlite/data.db*
+/compose.local.yaml
+/.env.mailcow
+/mailcow.env
 
 ###> symfony/framework-bundle ###
 /.env.local

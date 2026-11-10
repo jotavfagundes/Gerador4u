@@ -3,16 +3,31 @@
 namespace App\Service\Validator\ReceivedEmail;
 
 use App\Exception\ReceivedEmail\UnauthorizedToCreateReceivedEmailException;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
-class CreateReceivedEmailAuthValidator
+#[AsEventListener(event: KernelEvents::CONTROLLER)]
+final class CreateReceivedEmailAuthValidator
 {
-    public function validate(Request $request): void
+    public function __construct(
+        #[Autowire(env: 'default::CREATE_RECEIVED_EMAIL_API_AUTHORIZATION_KEY')]
+        private readonly ?string $key,
+    ) {
+    }
+
+    public function __invoke(ControllerEvent $event): void
     {
-        if ($request->headers->get('Authorization') === $_ENV['CREATE_RECEIVED_EMAIL_API_AUTHORIZATION_KEY']) {
+        $request = $event->getRequest();
+        if ($request->attributes->get('_route') !== 'api_create_email') {
             return;
         }
 
-        throw new UnauthorizedToCreateReceivedEmailException();
+        if ($this->key === null || strlen($this->key) < 32
+            || !hash_equals($this->key, $request->headers->get('Authorization', ''))
+        ) {
+            throw new UnauthorizedToCreateReceivedEmailException();
+        }
     }
 }

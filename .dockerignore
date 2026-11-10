@@ -30,4 +30,9 @@ vendor/
 node_modules/
 .editorconfig
 .env.local.php
+.env.local
+.env.*.local
+.env.mailcow
+mailcow.env
 .env.test
+sqlite/data.db*

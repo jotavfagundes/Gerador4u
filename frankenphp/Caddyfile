@@ -36,6 +36,9 @@
 
 	# Disable Topics tracking if not enabled explicitly: https://github.com/jkarlin/topics
 	header ?Permissions-Policy "browsing-topics=()"
+	header ?X-Content-Type-Options "nosniff"
+	header ?X-Frame-Options "SAMEORIGIN"
+	header ?Referrer-Policy "strict-origin-when-cross-origin"
 
 	reverse_proxy /connection/* {$CENTRIFUGO_UPSTREAM:centrifugo:8000}
 

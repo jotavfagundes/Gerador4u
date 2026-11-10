@@ -9,6 +9,8 @@ interface Props {
 }
 
 const SAFE_LINK_PROTOCOLS = ["http:", "https:", "mailto:"];
+const PREVIEW_POLICY = '<meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'">'
+  + '<meta name="referrer" content="no-referrer">';
 
 // The email is rendered in a sandboxed iframe, so a link can't navigate the frame itself
 // (and most sites refuse to be framed anyway). Force every link to open in a new tab instead.
@@ -53,8 +55,7 @@ const Inbox = ({temporaryEmailBox}: Props) => {
   }
 
   const handleViewFullScreen = (email: ReceivedEmailResponseDto) => {
-    console.log(email);
-    window.open('/email-box/'+temporaryEmailBox.uuid+'/email/'+email.uuid, "_blank");
+    window.open('/email-box/'+temporaryEmailBox.uuid+'/email/'+email.uuid, "_blank", "noopener,noreferrer");
   }
 
   // Fetch emails every 5 seconds
@@ -230,7 +231,8 @@ const Inbox = ({temporaryEmailBox}: Props) => {
                         No allow-scripts: the email can't run JS or touch our page.
                         allow-popups(-to-escape-sandbox): links open in a normal new tab. */}
                     <iframe
-                      srcDoc={selectedEmail.html}
+                      srcDoc={PREVIEW_POLICY + (selectedEmail.html ?? "")}
+                      referrerPolicy="no-referrer"
                       sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"
                       style={{
                         width: "100%",

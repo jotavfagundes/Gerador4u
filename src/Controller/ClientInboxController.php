@@ -12,24 +12,30 @@ use App\Service\Mailcow\MailboxProvisioner;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
+use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
-use Psr\Cache\CacheItemPoolInterface;
 
 final class ClientInboxController extends AbstractController
 {
-    public function __construct(private readonly string $displayTimezone)
-    {
+    public function __construct(
+        private readonly string $displayTimezone,
+        private readonly ClientIpRetriever $clientIp,
+        #[Autowire(service: 'limiter.mailbox_login')]
+        private readonly RateLimiterFactoryInterface $loginLimiter,
+        #[Autowire(service: 'limiter.mailbox_creation')]
+        private readonly RateLimiterFactoryInterface $creationLimiter,
+    ) {
     }
 
     #[Route('/acessar-caixa', name: 'app_client_inbox_login', methods: ['GET', 'POST'])]
     public function login(
         Request $request,
         TemporaryEmailBoxRepository $inboxes,
-        ClientIpRetriever $clientIp,
-        CacheItemPoolInterface $cache,
     ): Response {
         $email = '';
         $error = null;
@@ -41,9 +47,7 @@ final class ClientInboxController extends AbstractController
 
             $email = strtolower(trim($request->request->getString('email')));
             $password = $request->request->getString('password');
-            $attempts = $cache->getItem('client_inbox_login_' . hash('sha256', $clientIp->getClientIp($request)));
-            $count = (int) $attempts->get();
-            if ($count >= 15) {
+            if (!$this->loginLimiter->create($this->clientIp->getClientIp($request))->consume()->isAccepted()) {
                 $error = 'Muitas tentativas. Aguarde alguns minutos e tente novamente.';
                 $status = 429;
             } else {
@@ -59,7 +63,6 @@ final class ClientInboxController extends AbstractController
                     return $this->redirectToRoute('app_client_inbox', ['uuid' => $box->getUuid()], 303);
                 }
 
-                $cache->save($attempts->set($count + 1)->expiresAfter(600));
                 $error = 'E-mail ou senha inválidos.';
                 $status = 403;
             }
@@ -77,7 +80,6 @@ final class ClientInboxController extends AbstractController
         Request $request,
         DomainRepository $domains,
         TemporaryEmailBoxFactory $factory,
-        ClientIpRetriever $clientIp,
         SluggerInterface $slugger,
         EntityManagerInterface $entityManager,
         MailboxProvisioner $mailcow,
@@ -91,6 +93,14 @@ final class ClientInboxController extends AbstractController
 
         if (!$this->isCsrfTokenValid('create-client-inbox', $request->request->getString('_token'))) {
             throw $this->createAccessDeniedException();
+        }
+
+        $ip = $this->clientIp->getClientIp($request);
+        $limit = $this->creationLimiter->create($ip)->consume();
+        if (!$limit->isAccepted()) {
+            return $this->render('client_inbox/manage.html.twig', [
+                'error' => 'Muitas caixas criadas. Aguarde alguns minutos e tente novamente.',
+            ], new Response(status: 429, headers: ['Cache-Control' => 'private, no-store']));
         }
 
         $firstName = trim($request->request->getString('first_name'));
@@ -113,7 +123,7 @@ final class ClientInboxController extends AbstractController
         $prefix = rtrim(substr($firstSlug, 0, 24), '.') . '.' . rtrim(substr($lastSlug, 0, 24), '.');
         $email = sprintf('%s@%s', $prefix, $domain->getDomain());
         $password = $this->generateAccessPassword();
-        $box = $factory->create($email, $clientIp->getClientIp($request), null);
+        $box = $factory->create($email, $ip, null);
         $box->protectForClient(password_hash($password, PASSWORD_DEFAULT));
         if ($mailcow->supports($email)) {
             $box->scheduleMailcowProvision(new \DateTimeImmutable());
@@ -190,6 +200,14 @@ final class ClientInboxController extends AbstractController
                 }
 
                 return new Response(status: 204);
+            }
+
+            $limit = $this->loginLimiter->create($this->clientIp->getClientIp($request))->consume();
+            if (!$limit->isAccepted()) {
+                throw new TooManyRequestsHttpException(
+                    max(1, $limit->getRetryAfter()->getTimestamp() - time()),
+                    'Muitas tentativas. Aguarde alguns minutos e tente novamente.',
+                );
             }
 
             $password = $request->request->getString('password');

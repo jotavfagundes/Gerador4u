@@ -3,7 +3,19 @@ framework:
     secret: '%env(APP_SECRET)%'
 
     # Note that the session will be started ONLY if you read or write from it.
-    session: true
+    session:
+        cookie_httponly: true
+        cookie_samesite: lax
+
+    rate_limiter:
+        mailbox_login:
+            policy: sliding_window
+            limit: 15
+            interval: '10 minutes'
+        mailbox_creation:
+            policy: sliding_window
+            limit: 30
+            interval: '10 minutes'
 
     #esi: true
     #fragments: true

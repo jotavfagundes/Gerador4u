@@ -1,1 +1,10 @@
-{{ receivedEmail.html|raw }}
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <title>Visualizar mensagem</title>
+</head>
+<body style="margin: 0">
+    {% include 'email_box/preview.html.twig' with {html: html, frameStyle: 'display: block; width: 100%; height: 100vh; border: 0'} only %}
+</body>
+</html>
