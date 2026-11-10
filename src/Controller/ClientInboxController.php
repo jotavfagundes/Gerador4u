@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Repository\DomainRepository;
 use App\Repository\ReceivedEmailRepository;
 use App\Repository\TemporaryEmailBoxRepository;
@@ -84,11 +85,18 @@ final class ClientInboxController extends AbstractController
         EntityManagerInterface $entityManager,
         MailboxProvisioner $mailcow,
     ): Response {
+        $user = $this->getUser();
+        $canCreate = $user instanceof User && (User::isTeamEmail($user->getUserIdentifier()) || $this->isGranted('ROLE_ADMIN'));
+
         if ($request->isMethod('GET')) {
-            $response = $this->render('client_inbox/manage.html.twig');
+            $response = $this->render('client_inbox/manage.html.twig', ['canCreate' => $canCreate]);
             $response->headers->set('Cache-Control', 'private, no-store');
 
             return $response;
+        }
+
+        if (!$canCreate) {
+            throw $this->createAccessDeniedException();
         }
 
         if (!$this->isCsrfTokenValid('create-client-inbox', $request->request->getString('_token'))) {
@@ -99,6 +107,7 @@ final class ClientInboxController extends AbstractController
         $limit = $this->creationLimiter->create($ip)->consume();
         if (!$limit->isAccepted()) {
             return $this->render('client_inbox/manage.html.twig', [
+                'canCreate' => true,
                 'error' => 'Muitas caixas criadas. Aguarde alguns minutos e tente novamente.',
             ], new Response(status: 429, headers: ['Cache-Control' => 'private, no-store']));
         }
@@ -109,6 +118,7 @@ final class ClientInboxController extends AbstractController
         $lastSlug = $slugger->slug(mb_substr($lastName, 0, 80), '.', 'pt')->lower()->toString();
         if ($firstSlug === '' || $lastSlug === '' || mb_strlen($firstName) > 80 || mb_strlen($lastName) > 80) {
             return $this->render('client_inbox/manage.html.twig', [
+                'canCreate' => true,
                 'error' => 'Informe um nome e um sobrenome válidos, de até 80 caracteres cada.',
             ], new Response(status: 422));
         }
@@ -116,6 +126,7 @@ final class ClientInboxController extends AbstractController
         $domain = $domains->findOneActiveRandomNonPremiumDomain();
         if ($domain === null) {
             return $this->render('client_inbox/manage.html.twig', [
+                'canCreate' => true,
                 'error' => 'Nenhum domínio de e-mail ativo está disponível.',
             ], new Response(status: 422));
         }
@@ -124,6 +135,7 @@ final class ClientInboxController extends AbstractController
         $email = sprintf('%s@%s', $prefix, $domain->getDomain());
         $password = $this->generateAccessPassword();
         $box = $factory->create($email, $ip, null);
+        $box->setOwner($user);
         $box->protectForClient(password_hash($password, PASSWORD_DEFAULT));
         if ($mailcow->supports($email)) {
             $box->scheduleMailcowProvision(new \DateTimeImmutable());
@@ -177,7 +189,9 @@ final class ClientInboxController extends AbstractController
         $session = $request->getSession();
         $sessionKey = 'client_inbox_access';
         $accessVersion = $box->getAccessVersion();
-        $unlocked = $session->get($sessionKey) === [$uuid, $accessVersion];
+        $user = $this->getUser();
+        $isOwner = $user instanceof User && $box->getOwner()?->getId() === $user->getId();
+        $unlocked = $isOwner || $session->get($sessionKey) === [$uuid, $accessVersion];
         if ($request->isMethod('POST')) {
             if (!$this->isCsrfTokenValid('client-inbox-' . $uuid, $request->request->getString('_token'))) {
                 throw $this->createAccessDeniedException();
@@ -213,15 +227,17 @@ final class ClientInboxController extends AbstractController
             $password = $request->request->getString('password');
             if ($request->request->getString('action') === 'change-password') {
                 $newPassword = $request->request->getString('new_password');
-                if (!$unlocked || strlen($password) > 72 || !$box->verifiesAccessPassword($password)) {
+                if (!$unlocked || (!$isOwner && (strlen($password) > 72 || !$box->verifiesAccessPassword($password)))) {
                     $this->addFlash('error', 'Confira a senha atual da caixa.');
                 } elseif (strlen($newPassword) < 10 || strlen($newPassword) > 64 || trim($newPassword) !== $newPassword || str_contains($newPassword, "\0")) {
                     $this->addFlash('error', 'Use uma senha de 10 a 64 bytes, sem espaços nas extremidades.');
                 } else {
                     $box->changeAccessPassword(password_hash($newPassword, PASSWORD_DEFAULT));
                     $entityManager->flush();
-                    $session->migrate();
-                    $session->set($sessionKey, [$uuid, $box->getAccessVersion()]);
+                    if (!$isOwner) {
+                        $session->migrate();
+                        $session->set($sessionKey, [$uuid, $box->getAccessVersion()]);
+                    }
                     $this->addFlash('success', 'Senha atualizada.');
                 }
 
@@ -246,6 +262,7 @@ final class ClientInboxController extends AbstractController
         $context = [
             'box' => $box,
             'unlocked' => $unlocked,
+            'isOwner' => $isOwner,
             'emails' => $unlocked ? $messages->fetchByTemporaryEmailBox($box) : [],
         ];
         $response = $request->query->getBoolean('messages_only')

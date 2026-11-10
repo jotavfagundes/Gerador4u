@@ -41,6 +41,7 @@
                 </div>
             </section>
         {% endfor %}
+        {% if canCreate %}
         <form method="post" class="box g4-card mail4u-create-form">
             <h1 class="title">Nova caixa de e-mail</h1>
             <p class="mb-5">Informe o nome do cliente. A caixa recebe mensagens por um ano.</p>
@@ -58,9 +59,20 @@
             </div>
             <div class="mail4u-create-actions">
                 <button class="button is-primary">Criar caixa de e-mail</button>
-                <a href="{{ path('app_client_inbox_login') }}">Acessar uma caixa existente</a>
+                <a href="{{ path('app_team_inboxes') }}">Minhas caixas</a>
             </div>
         </form>
+        {% else %}
+        <section class="box g4-card">
+            <h1 class="title">Caixas de e-mail da equipe</h1>
+            <p>Entre com sua conta corporativa para criar caixas e gerenciar seus acessos.</p>
+            <div class="buttons mt-4">
+                <a class="button is-primary" href="{{ path('app_login') }}">Entrar</a>
+                <a class="button" href="{{ path('app_team_register') }}">Criar conta</a>
+            </div>
+            <a href="{{ path('app_client_inbox_login') }}">Acessar uma caixa com e-mail e senha</a>
+        </section>
+        {% endif %}
     </div>
 </section>
 <script>

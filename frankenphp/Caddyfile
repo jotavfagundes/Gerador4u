@@ -23,6 +23,8 @@
 		format filter {
 			request>uri query {
 				replace authorization REDACTED
+				replace team_signature REDACTED
+				replace team_email REDACTED
 			}
 		}
 	}

@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+{% block title %}Confirmar cadastro - Mail4u{% endblock %}
+
+{% block body %}
+    <section class="section g4-main mail4u-auth">
+        {% if valid %}
+            <form method="post" class="box g4-card">
+                <h1 class="title is-4">Definir senha da conta</h1>
+                <p class="mb-4">{{ email }}</p>
+                {% if error %}<p class="notification is-danger">{{ error }}</p>{% endif %}
+                <input type="hidden" name="_token" value="{{ csrf_token('team-confirm-' ~ email) }}">
+                <div class="field">
+                    <label class="label" for="team-password">Senha da conta</label>
+                    <input class="input" type="password" name="password" id="team-password" minlength="12" maxlength="72" autocomplete="new-password" required>
+                </div>
+                <button class="button is-primary">Criar conta</button>
+            </form>
+        {% else %}
+            <div class="box g4-card">
+                <h1 class="title is-4">Link inválido ou expirado</h1>
+                <a href="{{ path('app_team_register') }}">Pedir outro link</a>
+            </div>
+        {% endif %}
+    </section>
+{% endblock %}

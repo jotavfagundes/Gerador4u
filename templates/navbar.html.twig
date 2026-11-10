@@ -5,8 +5,13 @@
             {% set currentRoute = app.request.attributes.get('_route') %}
             <a href="/"{% if currentRoute in ['app_home', 'app_client_inboxes'] %} aria-current="page"{% endif %}>Início</a>
             <a href="{{ path('app_client_inbox_login') }}"{% if currentRoute in ['app_client_inbox_login', 'app_client_inbox'] %} aria-current="page"{% endif %}>Acessar caixa</a>
-            <a href="{{ path('admin') }}">Administração</a>
-            {% if app.user %}<a href="{{ path('app_logout') }}">Sair</a>{% endif %}
+            {% if is_granted('ROLE_ADMIN') %}<a href="{{ path('admin') }}">Administração</a>{% endif %}
+            {% if app.user %}
+                <a href="{{ path('app_team_inboxes') }}"{% if currentRoute == 'app_team_inboxes' %} aria-current="page"{% endif %}>Minhas caixas</a>
+                <a href="{{ path('app_logout') }}">Sair</a>
+            {% else %}
+                <a href="{{ path('app_login') }}">Entrar</a>
+            {% endif %}
         </nav>
     </div>
 </header>

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\TemporaryEmailBox;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -22,6 +23,18 @@ class TemporaryEmailBoxRepository extends ServiceEntityRepository
             // Keep client addresses reserved after expiration to prevent delivery to a different client.
             ->where('t.expiresAt IS NULL AND t.createdAt < :olderThan')
             ->setParameter('olderThan', $olderThan)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /** @return list<TemporaryEmailBox> */
+    public function findClientInboxesByOwner(User $owner): array
+    {
+        return $this->createQueryBuilder('box')
+            ->where('box.owner = :owner AND box.accessPasswordHash IS NOT NULL')
+            ->setParameter('owner', $owner)
+            ->orderBy('box.createdAt', 'DESC')
+            ->addOrderBy('box.id', 'DESC')
             ->getQuery()
             ->getResult();
     }

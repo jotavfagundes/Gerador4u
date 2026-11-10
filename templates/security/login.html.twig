@@ -23,7 +23,10 @@
                     </div>
                 {% endif %}
 
-                <h1 class="title is-4 has-text-centered">Entrar na administração</h1>
+                {% for message in app.flashes('team_registered') %}
+                    <div class="notification is-success is-light">{{ message }}</div>
+                {% endfor %}
+                <h1 class="title is-4 has-text-centered">Entrar no Mail4u</h1>
 
                 <div class="field">
                     <label class="label" for="username">Email</label>
@@ -73,6 +76,7 @@
                         Entrar
                     </button>
                 </div>
+                <p class="has-text-centered"><a href="{{ path('app_team_register') }}">Criar conta corporativa</a></p>
 
             </form>
         </div>
