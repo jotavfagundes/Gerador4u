@@ -26,6 +26,57 @@ class ReceivedEmailRepository extends ServiceEntityRepository
             ->execute();
     }
 
+    /** @param non-empty-list<string> $domains
+     *  @return list<ReceivedEmail>
+     */
+    public function findUnlinkedForMailcow(array $domains, \DateTimeImmutable $now): array
+    {
+        $query = $this->createQueryBuilder('r');
+        $matchesDomain = $query->expr()->orX();
+        foreach ($domains as $index => $domain) {
+            $parameter = 'mailcowDomain' . $index;
+            $matchesDomain->add($query->expr()->like('LOWER(r.realTo)', ':' . $parameter));
+            $query->setParameter($parameter, '%@' . $domain);
+        }
+
+        return $query
+            ->where('r.temporaryEmailBox IS NULL AND r.createdAt >= :cutoff')
+            ->andWhere('r.mailcowLinkAfter IS NULL OR r.mailcowLinkAfter <= :now')
+            ->andWhere($matchesDomain)
+            ->setParameter('cutoff', $now->modify('-24 hours'))
+            ->setParameter('now', $now)
+            ->orderBy('r.id', 'ASC')
+            ->setMaxResults(20)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function claimMailcowLink(int $id, \DateTimeImmutable $now): bool
+    {
+        return 1 === $this->createQueryBuilder('r')
+            ->update()
+            ->set('r.mailcowLinkAfter', ':retry')
+            ->where('r.id = :id AND r.temporaryEmailBox IS NULL')
+            ->andWhere('r.mailcowLinkAfter IS NULL OR r.mailcowLinkAfter <= :now')
+            ->setParameter('id', $id)
+            ->setParameter('now', $now)
+            ->setParameter('retry', $now->modify('+5 minutes'))
+            ->getQuery()
+            ->execute();
+    }
+
+    public function deferMailcowLink(int $id, \DateTimeImmutable $after): void
+    {
+        $this->createQueryBuilder('r')
+            ->update()
+            ->set('r.mailcowLinkAfter', ':after')
+            ->where('r.id = :id AND r.temporaryEmailBox IS NULL')
+            ->setParameter('id', $id)
+            ->setParameter('after', $after)
+            ->getQuery()
+            ->execute();
+    }
+
     /** @return list<ReceivedEmail> */
     public function findDueMailcowCopies(\DateTimeImmutable $now): array
     {

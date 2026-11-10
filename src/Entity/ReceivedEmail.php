@@ -68,6 +68,9 @@ class ReceivedEmail
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $mailcowCopyAttemptedAt = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $mailcowLinkAfter = null;
+
     public function getMailcowCopyState(): string
     {
         return $this->mailcowCopyStatus ?? ($this->mailcowCopyAfter !== null ? 'queued' : 'unknown');

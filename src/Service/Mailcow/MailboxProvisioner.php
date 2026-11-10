@@ -30,6 +30,19 @@ final class MailboxProvisioner
             && $domain !== '' && in_array(strtolower($domain), $this->domains, true);
     }
 
+    /** @return list<string> */
+    public function getLinkableDomains(): array
+    {
+        if (!str_starts_with($this->url ?? '', 'https://') || !$this->apiKey) {
+            return [];
+        }
+
+        return array_values(array_unique(array_filter(
+            $this->domains,
+            static fn (string $domain): bool => filter_var($domain, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) !== false,
+        )));
+    }
+
     public function provision(string $email): string
     {
         [$localPart, $domain] = explode('@', $email, 2);
