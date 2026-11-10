@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Caixa vinculada | Mail4u</title>
+    <link rel="icon" href="/brand/mail4u-favicon-final.ico">
+    <link rel="stylesheet" href="/brand/mail4u.css">
+</head>
+<body>
+    <main class="g4-card" style="max-width: 36rem; margin: 2rem auto; padding: 1.5rem; overflow-wrap: anywhere">
+        <h1>Caixa criada e mensagem vinculada</h1>
+        <p><strong>E-mail</strong> {{ box.email }}</p>
+        <p><strong>Senha da nova caixa</strong> <code>{{ password }}</code></p>
+        <p>Guarde a senha. Ela é exibida uma única vez.</p>
+        <p><a href="{{ path('app_client_inbox', {uuid: box.uuid}) }}">Abrir caixa no Mail4u</a></p>
+        <p><a href="{{ detailUrl }}">Voltar para a mensagem</a></p>
+    </main>
+</body>
+</html>
